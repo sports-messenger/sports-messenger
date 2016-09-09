@@ -1,6 +1,3 @@
-// Karma configuration
-// Generated on Mon Aug 22 2016 11:14:55 GMT-0700 (Pacific Daylight Time)
-
 const webpackConfig = require('./webpack.config.js');
 webpackConfig.entry = {};
 
