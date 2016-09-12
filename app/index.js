@@ -12,8 +12,6 @@ require('./controllers')(projectApp);
 
 projectApp.run(['$rootScope', ($rs) => {
   $rs.baseUrl = `${__API_URL__}/api`;
-  $rs.parkUrl = $rs.baseUrl + '/park';
-  $rs.commentUrl = $rs.baseUrl + '/comment';
   $rs.httpConfig = {
     headers: {
       'Content-Type': 'appliction/json',
