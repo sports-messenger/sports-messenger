@@ -22,7 +22,7 @@ let parkSchema = mongoose.Schema({
 parkSchema.methods.addComment = function(data) {
   let result;
   return new Promise((resolve, reject) => {
-    if(!data.listId || !data.userId || !data.date) {
+    if(!data.parkId || !data.userId) {
       return reject(createError(400, 'comment requires a userId, listId and date'));
     }
     new Comment(data).save()
