@@ -6,11 +6,11 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 let commentSchema = mongoose.Schema({
-  listId: String,
+  parkId: String,
   userId: String,
   text: String,
   compRating: Number,
-  crowdRating: Number,
+  busyRating: Number,
   date: Date
 });
 
