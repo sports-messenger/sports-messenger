@@ -22,7 +22,7 @@ commentRouter.post('./comments', jsonParser, jwtAuth, function(req, res, next){
 });
 
 commentRouter.get('/comments', function(req, res, next){
-  debug('GET from /api/comment');
+  debug('GET from /api/comments');
   Comment.find({})
     .populate('comments')
     .then( comments => res.send(comments)).catch(next);
