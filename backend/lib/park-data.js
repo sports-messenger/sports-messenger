@@ -23,9 +23,7 @@ module.exports = exports = request(options, function (error, response, data) {
   });
   let formattedData = [];
   filteredData.forEach(function(park) {
-    let newPark = {};
-    newPark.location = {};
-    newPark.sports = [];
+    let newPark = {location: {}, sports: []};
     newPark.name = park.name;
     newPark.hours = park.hours;
     newPark.location.ypos = parseFloat(park.ypos);
@@ -33,8 +31,7 @@ module.exports = exports = request(options, function (error, response, data) {
     newPark.sports.push(park.feature_desc);
     formattedData.push(newPark);
   });
-  let sortedData = [];
-  sortedData = formattedData.sort(function(a, b) {
+  let sortedData = formattedData.sort(function(a, b) {
     let nameA = a.name.toUpperCase();
     let nameB = b.name.toUpperCase();
     if(nameA < nameB) {
