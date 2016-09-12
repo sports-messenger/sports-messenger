@@ -1,0 +1,9 @@
+<div ng-init="commentCtrl.getAllComments()">
+  <h4>Comments:</h4>
+  <sm-comment-form comment-button-text="Add Comment"></sm-comment-form>
+  <ul>
+    <li ng-repeat="comment in commentCtrl.comments">
+    <p>{{comment.text}}</p>
+    </li>
+  </ul>
+</div>
