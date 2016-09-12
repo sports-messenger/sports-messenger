@@ -9,7 +9,8 @@ let userSchema = mongoose.Schema({
   basic: {
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true}
-  }
+  },
+  role: {type: String, default: 'basic', required: true}
 });
 
 userSchema.methods.generateHash = function(password) {
