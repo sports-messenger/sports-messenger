@@ -5,7 +5,7 @@ module.exports = (app) => {
     return {
       controller: 'CommentController',
       controllerAs: 'commentCtrl',
-      template: require('comment-template.html'),
+      template: require('./comment-template.html'),
       bindToController: true,
       scope: {
         baseUrl: '@',
