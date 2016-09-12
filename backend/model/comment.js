@@ -6,8 +6,8 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 
 let commentSchema = mongoose.Schema({
-  parkId: String,
-  userId: String,
+  parkId: {type: String, required: true},
+  userId: {type: String, required: true},
   text: String,
   compRating: Number,
   busyRating: Number,
