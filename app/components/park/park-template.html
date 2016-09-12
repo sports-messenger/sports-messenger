@@ -1,3 +1,9 @@
 <div ng-init="parkCtrl.getAllParks()">
-
+  <h2>Parks:</h2>
+  <ul>
+    <li ng-repeat="park in parkCtrl.parks">
+      <h3>{{park.name}}</h3>
+      <sm-comment park="park" config="httpConfig" base-url="{{parkCtrl.baseUrl}}"></sm-comment>
+    </li>
+  </ul>
 </div>

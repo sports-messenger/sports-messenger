@@ -2,6 +2,8 @@
 
 module.exports = (app) => {
   require('./sign-up')(app);
-  require('./log-in')(app);
+  require('./sign-in')(app);
   require('./park')(app);
+  require('./comment')(app);
+  require('./comment-form')(app);
 };

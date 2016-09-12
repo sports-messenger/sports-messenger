@@ -4,8 +4,7 @@ require('!!file?name=[name].[ext]!./html/index.html');
 require('./scss/base.scss');
 
 const angular = require('angular');
-const angularRoute = require('angular-route');
-const projectApp = angular.module('projectApp', [angularRoute]);
+const projectApp = angular.module('projectApp', [require('angular-route')]);
 
 require('./components')(projectApp);
 require('./controllers')(projectApp);
@@ -18,4 +17,20 @@ projectApp.run(['$rootScope', ($rs) => {
       'Accept': 'application/json'
     }
   };
+}]);
+
+projectApp.config(['$routeProvider', ($rp) => {
+  $rp
+  .when('/parks', {
+    template: require('./html/parks.html')
+  })
+  .when('/signup', {
+    template: require('./html/sign-up.html')
+  })
+  .when('/signin', {
+    template: require('./html/sign-in.html')
+  })
+  .otherwise({
+    redirectTo: 'signup'
+  });
 }]);
