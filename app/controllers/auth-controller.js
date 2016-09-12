@@ -13,8 +13,8 @@ module.exports = function(app) {
       });
     };
 
-    this.signin = function(user) {
-      $http.get(this.baseUrl + '/signin', {
+    this.login = function(user) {
+      $http.get(this.baseUrl + '/login', {
         headers: {
           'Authorization': 'Basic ' + $window.btoa(user.basic.email + ':' + user.basic.password)
         }
@@ -23,7 +23,7 @@ module.exports = function(app) {
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
         $location.path('/home');
       }, (err) => {
-        $log.error('error in $ctrl.signin', err);
+        $log.error('error in $ctrl.login', err);
       });
     };
   }]);
