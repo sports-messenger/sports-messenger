@@ -23,7 +23,7 @@ module.exports = exports = request(options, function (error, response, data) {
   });
   let formattedData = [];
   filteredData.forEach(function(park) {
-    let newPark = {location: {}, sports: []};
+    let newPark = new Park();
     newPark.name = park.name;
     newPark.hours = park.hours;
     newPark.location.ypos = parseFloat(park.ypos);
@@ -42,5 +42,6 @@ module.exports = exports = request(options, function (error, response, data) {
     }
     return 0;
   });
+
   console.log('sorted Data:', sortedData);
 });
