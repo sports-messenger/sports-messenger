@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = (app) => {
-  require('./authController')(app);
+  require('./auth-controller')(app);
 };
