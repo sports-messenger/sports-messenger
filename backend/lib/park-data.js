@@ -41,45 +41,6 @@ module.exports = exports = function() {
         console.log('inside promise.then');
         assert.equal(savedPark.name, newPark.name);
       });
-      // console.log('newPark:', newPark);
-      // newPark.save().then((savedPark) => {
-      //   console.log('savedPark:', savedPark);
-      // }, (err) => {
-      //   console.log('error', err);
-      // });
     });
-
-    // let all = Promise.all(formattedData.map(function(park) {
-    //   let result;
-    //   // let keiran = new Park(park);
-    //   console.log('keiran:', keiran);
-    //   keiran.save()
-    //       .then((newPark) => {
-    //         result = newPark;
-    //         console.log('newPark:', newPark);
-    //         console.log('this:', this);
-    //         return this.save();
-    //       })
-    // }));
-    //   all.then((result) => {
-    //     console.log('result:', result);
-    //   });
-
-
-    //   let nums = [1,2,3,4,5];
-    //
-    //   let all = Promise.all(nums.map((num) => {
-    //     return new Promise((resolve, reject) => {
-    //     let rand = Math.random() * (1000 * num);
-    //     setTimeout(() => {
-    //       resolve(rand);
-    //     }, rand)
-    //   });
-    // }));
-    //
-    // all.then((result) => {
-    //   console.log(result);
-    // });
-    return formattedData;
   });
 };
