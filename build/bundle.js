@@ -33341,7 +33341,7 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n";
+	module.exports = "<log-in base-url=\"baseUrl\"></log-in>\n";
 
 /***/ }
 /******/ ]);

@@ -33,6 +33,8 @@ app.all('*', function(req, res, next){
 
 app.use(handleError);
 
+app.use(express.static(`${__dirname}/build`));
+
 app.listen(port, function(){
   console.log(`Server up on ${port}`);
   debug(`server up :: ${port}`);
