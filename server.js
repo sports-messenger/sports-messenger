@@ -23,7 +23,9 @@ mongoose.connect(mongoDbUri);
 // app.use(cors());
 app.use(morgan('dev'));
 
-// app.get('/')
+app.get('/', (req, res) => {
+  res.json({msg: 'hello'});
+});
 
 app.use('/api', authRouter);
 app.use('/api', commentRouter);
