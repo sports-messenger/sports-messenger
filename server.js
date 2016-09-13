@@ -5,12 +5,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const createError = require('http-errors');
-const cors = require('cors');
 const debug = require('debug')('home:server');
+const cors = require('cors');
 
-const handleError = require('./lib/error-handler');
-const authRouter = require('./routes/auth-router');
-const commentRouter = require('./routes/comment-router');
+const handleError = require('./backend/lib/error-handler');
+const authRouter = require('./backend/routes/auth-router');
+const commentRouter = require('./backend/routes/comment-router');
+const parkRouter = require('./backend/routes/park-router');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,8 +24,15 @@ mongoose.connect(mongoDbUri);
 app.use(morgan('dev'));
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.json({msg: 'hello'});
+});
+
 app.use('/api', authRouter);
-app.use('/api/comments', commentRouter);
+app.use('/api', commentRouter);
+app.use('/api/parks', parkRouter);
+
+app.get('/api/parks/test', (req, res) => {});
 
 app.all('*', function(req, res, next){
   debug('Got error: 404');
@@ -32,6 +40,8 @@ app.all('*', function(req, res, next){
 });
 
 app.use(handleError);
+
+app.use(express.static(`${__dirname}/build`));
 
 app.listen(port, function(){
   console.log(`Server up on ${port}`);

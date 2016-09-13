@@ -2,7 +2,7 @@
 
 module.exports = (app) => {
   require('./sign-up')(app);
-  require('./sign-in')(app);
+  require('./log-in')(app);
   require('./park')(app);
   require('./map')(app);
   require('./comment')(app);
