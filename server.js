@@ -14,7 +14,7 @@ const commentRouter = require('./backend/routes/comment-router');
 
 const app = express();
 const port = process.env.PORT || 3000;
-const mongoDbUri = process.env.MONGODB_URI || 'mongodb://localhost/home';
+const mongoDbUri = process.env.MONGODB_URI || 'mongodb://localhost:3000';
 process.env.APP_SECRET = 'secret';
 
 mongoose.Promise = Promise;
