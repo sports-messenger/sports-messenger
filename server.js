@@ -32,6 +32,8 @@ app.use('/api', authRouter);
 app.use('/api', commentRouter);
 app.use('/api/parks', parkRouter);
 
+app.get('/api/parks/test', (req, res) => {});
+
 app.all('*', function(req, res, next){
   debug('Got error: 404');
   next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
