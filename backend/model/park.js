@@ -14,7 +14,7 @@ let parkSchema = mongoose.Schema({
     xpos: {type: Number, required: true},
     ypos: {type: Number, required: true}
   },
-  comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment', unique: true}],
+  comments: [{type: mongoose.Schema.Types.ObjectId, ref: 'Comment'}],
   sports: Array
 });
 
