@@ -16,6 +16,18 @@ module.exports = function(app) {
         });
     };
 
+    this.getSingleComment = function(commentId) {
+      $log.debug('commentCtrl.getSingleComment');
+      $http.get(this.baseUrl + '/comments/' + commentId, this.config)
+        .then((res) => {
+          $log.log('commentCtrl.getSingleComment res.data', res.data);
+          this.comments = res.data;
+        }, (err) => {
+          $log.error('error in commentCtrl.getAllComments', err);
+        });
+    };
+
+
     this.deleteComment = function(comment) {
       $log.debug('commentCtrl.deleteComment');
       $http.delete(this.baseUrl + '/comments/' + comment._id, this.config)

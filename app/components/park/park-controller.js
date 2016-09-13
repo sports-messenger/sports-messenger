@@ -6,6 +6,8 @@ module.exports = function(app) {
 
 function ParkController($log, $http) {
   this.parks = [];
+  this.selectedParks = [];
+  this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
 
   this.getAllParks = function() {
     $log.debug('parkCtrl.getAllParks');
@@ -48,6 +50,13 @@ function ParkController($log, $http) {
       $log.log('parkCtrl.updatePark res', res);
     }, (err) => {
       $log.error('error in parkCtrl.updatePark', err);
+    });
+  };
+
+  this.getSelectedParks = function(input) {
+    $log.debug('parkCtrl.getSelectedParks');
+    this.selectedParks.filter(function() {
+      
     });
   };
 }
