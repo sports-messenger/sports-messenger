@@ -53,10 +53,4 @@ function ParkController($log, $http) {
     });
   };
 
-  this.getSelectedParks = function(input) {
-    $log.debug('parkCtrl.getSelectedParks');
-    this.selectedParks.filter(function() {
-      
-    });
-  };
 }

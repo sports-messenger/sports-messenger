@@ -1,3 +1,12 @@
 <div ng-init="commentCtrl.getSingleComment(commentCtrl.comment)">
-
+  <p>{{commentCtrl.comments[0].username}}</p>
+  <p>{{commentCtrl.comments[0].text}}</p>
+  <p>{{commentCtrl.comments[0].date}}</p>
+  <p>
+    {{commentCtrl.comments[0].compRating}}
+  </p>
+  <p>
+    {{commentCtrl.comments[0].busyRating}}
+  </p>
+  <button type="button" ng-click="commentCtrl.deleteComment(commentCtrl.comments[0])">Delete Comment</button>
 </div>
