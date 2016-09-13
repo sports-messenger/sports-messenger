@@ -1,11 +1,11 @@
 'use strict';
 
-// const morgan = require('morgan');
+const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-// const createError = require('http-errors');
-// const cors = require('cors');
+const createError = require('http-errors');
+const cors = require('cors');
 const debug = require('debug')('home:server');
 
 const handleError = require('./lib/error-handler');
@@ -20,16 +20,16 @@ process.env.APP_SECRET = 'secret';
 mongoose.Promise = Promise;
 mongoose.connect(mongoDbUri);
 
-// app.use(morgan('dev'));
-// app.use(cors());
+app.use(morgan('dev'));
+app.use(cors());
 
 app.use('/api', authRouter);
 app.use('/api', commentRouter);
 
-// app.all('*', function(req, res, next){
-  // debug('Got error: 404');
-  // next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
-// });
+app.all('*', function(req, res, next){
+  debug('Got error: 404');
+  next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
+});
 
 app.use(handleError);
 

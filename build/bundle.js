@@ -68,12 +68,12 @@
 	projectApp.config(['$routeProvider', function ($rp) {
 	  $rp.when('/parks', {
 	    template: __webpack_require__(29)
-	  }).when('/signup', {
+	  }).when('/home', {
 	    template: __webpack_require__(30)
-	  }).when('/login', {
+	  }).when('/parks/:id', {
 	    template: __webpack_require__(31)
 	  }).otherwise({
-	    redirectTo: '/signup'
+	    redirectTo: 'home'
 	  });
 	}]);
 
@@ -33084,11 +33084,6 @@
 	      $log.error('error in parkCtrl.updatePark', err);
 	    });
 	  };
-
-	  this.getSelectedParks = function (input) {
-	    $log.debug('parkCtrl.getSelectedParks');
-	    this.selectedParks.filter(function () {});
-	  };
 	}
 
 /***/ },
@@ -33159,17 +33154,30 @@
 	      $http.get(this.baseUrl + '/comments/' + commentId, this.config).then(function (res) {
 	        $log.log('commentCtrl.getSingleComment res.data', res.data);
 	        _this2.comments = res.data;
+	        _this2.getUsername(_this2.comments[0]);
 	      }, function (err) {
 	        $log.error('error in commentCtrl.getAllComments', err);
 	      });
 	    };
 
-	    this.deleteComment = function (comment) {
+	    this.getUsername = function (comment) {
 	      var _this3 = this;
+
+	      $log.debug('commentCtrl.getUsername');
+	      $http.get(this.baseUrl + '/users/' + comment.userId).then(function (res) {
+	        $log.log('commentCtrl.getUsername res.data', res.data);
+	        _this3.comment.username = res.data.name;
+	      }, function (err) {
+	        $log.error('error in commentCtrl.getUsername', err);
+	      });
+	    };
+
+	    this.deleteComment = function (comment) {
+	      var _this4 = this;
 
 	      $log.debug('commentCtrl.deleteComment');
 	      $http.delete(this.baseUrl + '/comments/' + comment._id, this.config).then(function (res) {
-	        _this3.comments.splice(_this3.comments.indexOf(comment), 1);
+	        _this4.comments.splice(_this4.comments.indexOf(comment), 1);
 	        $log.log('commentCtrl.deleteComment res', res);
 	      }, function (err) {
 	        $log.error('error in commentCtrl.deleteComment', err);
@@ -33177,14 +33185,14 @@
 	    };
 
 	    this.createComment = function (comment) {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      $log.debug('commentCtrl.createComment');
 	      comment.parkId = this.park._id;
 	      $http.post(this.baseUrl + '/comments', comment, this.config).then(function (res) {
 	        $log.log('successfully created comment', res.data);
-	        _this4.comments.push(res.data);
-	        _this4.park.comments.push(res.data);
+	        _this5.comments.push(res.data);
+	        _this5.park.comments.push(res.data);
 	      }).catch(function (err) {
 	        $log.error('error in commentCtrl.createComment', err);
 	      });
@@ -33219,7 +33227,7 @@
 /* 22 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n\n</div>\n";
+	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
 
 /***/ },
 /* 23 */
@@ -33242,6 +33250,7 @@
 	  app.controller('CommentFormController', ['$scope', '$log', function ($scope, $log) {
 	    var _this = this;
 
+	    this.ratings = [1, 2, 3, 4, 5];
 	    this.comment = $scope.comment || {};
 	    this.commentButtonText = $scope.commentButtonText;
 	    this.saveComment = $scope.saveComment;
@@ -33280,7 +33289,7 @@
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n\n  <ng-transclude></ng-transclude>\n</form>\n";
+	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\n  </select>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
 
 /***/ },
 /* 27 */
@@ -33335,13 +33344,13 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<sign-up base-url=\"baseUrl\"></sign-up> \n";
+	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n<sign-up base-url=\"baseUrl\"></sign-up>\n";
 
 /***/ },
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<log-in base-url=\"baseUrl\"></log-in>\n";
+	module.exports = "<div>\n  <h2>{{park.name}}</h2>\n  <p>{{park.sports}}</p>\n  <p>{{park.hours}}</p>\n  <ul>\n    <li ng-repeat=\"comment in park.comments\"><sm-comment park=\"{{park}}\" comment=\"{{comment}}\"></sm-comment></li>\n  </ul>\n  <sm-comment-form comment-button-text=\"Add Comment\" save-comment=\"commentCtrl.createComment(comment)\"></sm-comment-form>\n</div>\n";
 
 /***/ }
 /******/ ]);
