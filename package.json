@@ -2,7 +2,7 @@
   "name": "sports-messenger",
   "version": "1.0.0",
   "description": "Final Project for Codefellows 401-d8",
-  "main": "index.js",
+  "main": "./backend/server.js",
   "scripts": {
     "watch": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
