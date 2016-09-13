@@ -27,8 +27,8 @@ projectApp.config(['$routeProvider', ($rp) => {
   .when('/signup', {
     template: require('./html/sign-up.html')
   })
-  .when('/signin', {
-    template: require('./html/sign-in.html')
+  .when('/login', {
+    template: require('./html/log-in.html')
   })
   .otherwise({
     redirectTo: 'signup'

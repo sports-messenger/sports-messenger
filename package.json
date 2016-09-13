@@ -4,6 +4,7 @@
   "description": "Final Project for Codefellows 401-d8",
   "main": "index.js",
   "scripts": {
+    "watch": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
