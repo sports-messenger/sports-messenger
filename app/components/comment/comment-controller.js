@@ -22,11 +22,22 @@ module.exports = function(app) {
         .then((res) => {
           $log.log('commentCtrl.getSingleComment res.data', res.data);
           this.comments = res.data;
+          this.getUsername(this.comments[0]);
         }, (err) => {
           $log.error('error in commentCtrl.getAllComments', err);
         });
     };
 
+    this.getUsername = function(comment) {
+      $log.debug('commentCtrl.getUsername');
+      $http.get(this.baseUrl + '/users/' + comment.userId)
+        .then((res) => {
+          $log.log('commentCtrl.getUsername res.data', res.data);
+          this.comment.username = res.data.name;
+        }, (err) => {
+          $log.error('error in commentCtrl.getUsername', err);
+        });
+    };
 
     this.deleteComment = function(comment) {
       $log.debug('commentCtrl.deleteComment');

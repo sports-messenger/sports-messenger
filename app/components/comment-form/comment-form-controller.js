@@ -2,6 +2,7 @@
 
 module.exports = function(app) {
   app.controller('CommentFormController', ['$scope', '$log', function($scope, $log) {
+    this.ratings = [1, 2, 3 , 4, 5];
     this.comment = $scope.comment || {};
     this.commentButtonText = $scope.commentButtonText;
     this.saveComment = $scope.saveComment;
