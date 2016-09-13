@@ -26,10 +26,10 @@ mongoose.connect(mongoDbUri);
 app.use('/api', authRouter);
 app.use('/api/comments', commentRouter);
 
-app.all('*', function(req, res, next){
-  debug('Got error: 404');
-  next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
-});
+// app.all('*', function(req, res, next){
+  // debug('Got error: 404');
+  // next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
+// });
 
 app.use(handleError);
 
