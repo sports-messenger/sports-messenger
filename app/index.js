@@ -31,6 +31,6 @@ projectApp.config(['$routeProvider', ($rp) => {
     template: require('./html/log-in.html')
   })
   .otherwise({
-    redirectTo: 'signup'
+    redirectTo: '/signup'
   });
 }]);
