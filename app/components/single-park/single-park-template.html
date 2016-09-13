@@ -1,0 +1,8 @@
+<div>
+  <h2>{{park.name}}</h2>
+  <p>{{park.sports}}</p>
+  <p>{{park.hours}}</p>
+  <ul>
+    <li ng-repeat="comment in park.comments"><sm-comment comment="{{comment}}"></sm-comment></li>
+  </ul>
+</div>
