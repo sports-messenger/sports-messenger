@@ -73,7 +73,7 @@
 	  }).when('/login', {
 	    template: __webpack_require__(31)
 	  }).otherwise({
-	    redirectTo: 'signup'
+	    redirectTo: '/signup'
 	  });
 	}]);
 

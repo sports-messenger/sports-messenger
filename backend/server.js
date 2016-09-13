@@ -24,7 +24,7 @@ mongoose.connect(mongoDbUri);
 // app.use(cors());
 
 app.use('/api', authRouter);
-app.use('/api/comments', commentRouter);
+app.use('/api', commentRouter);
 
 // app.all('*', function(req, res, next){
   // debug('Got error: 404');
