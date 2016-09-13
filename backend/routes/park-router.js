@@ -29,6 +29,11 @@ parkRouter.get('/', function(req,res,next){
     .then(parks => res.send(parks)).catch(next);
 });
 
+parkRouter.get('/test', function(req, res, next) {
+  require('../lib/park-data')();
+  res.json('Please Work, ' + new Date());
+});
+
 parkRouter.get('/:id', function(req,res,next){
   debug('GET /api/park/:id');
   Park.findOne({_id: req.params.id})
@@ -43,6 +48,7 @@ parkRouter.put('/:id', jsonParser, function(req, res, next){
     .then( park => res.send(park))
     .catch(next);
 });
+
 
 parkRouter.delete('/:id', jsonParser, function(req, res, next){
   let result;
