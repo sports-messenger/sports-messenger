@@ -3,7 +3,12 @@
     <label for="text">Text:</label>
     <input name="text" class="form-control" ng-model="cfCtrl.comment.text">
   </div>
+  <select name="compRating">
+    <option ng-repeat="rating cfCtrl.ratings" ng-model="cfCtrl.comment.compRating">{{rating}}</option>
+  </select>
+  <select name="busyRating">
+    <option ng-repeat="rating cfCtrl.ratings" ng-model="cfCtrl.comment.busyRating">{{rating}}</option>
+  </select>
   <button type="submit" class="btn btn-default">{{cfCtrl.commentButtonText}}</button>
-
   <ng-transclude></ng-transclude>
 </form>

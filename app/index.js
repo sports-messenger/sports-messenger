@@ -24,13 +24,13 @@ projectApp.config(['$routeProvider', ($rp) => {
   .when('/parks', {
     template: require('./html/parks.html')
   })
-  .when('/signup', {
-    template: require('./html/sign-up.html')
+  .when('/home', {
+    template: require('./html/home.html')
   })
-  .when('/signin', {
-    template: require('./html/sign-in.html')
+  .when('/parks/:id', {
+    template: require('./components/single-park/single-park-template.html')
   })
   .otherwise({
-    redirectTo: 'signup'
+    redirectTo: 'home'
   });
 }]);
