@@ -9,8 +9,7 @@ mongoose.Promise = Promise;
 
 let parkSchema = mongoose.Schema({
   name: {type: String, required: true},
-  address: {type: String, required: true},
-  hours: {type: String, required: true},
+  hours: String,
   location: {
     xpos: {type: Number, required: true},
     ypos: {type: Number, required: true}

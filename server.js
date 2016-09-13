@@ -11,6 +11,7 @@ const cors = require('cors');
 const handleError = require('./backend/lib/error-handler');
 const authRouter = require('./backend/routes/auth-router');
 const commentRouter = require('./backend/routes/comment-router');
+const parkRouter = require('./backend/routes/park-router');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ app.get('/', (req, res) => {
 
 app.use('/api', authRouter);
 app.use('/api', commentRouter);
+app.use('/api/parks', parkRouter);
 
 app.all('*', function(req, res, next){
   debug('Got error: 404');
