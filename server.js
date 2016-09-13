@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
-// const createError = require('http-errors');
+const createError = require('http-errors');
 const debug = require('debug')('home:server');
 
 const handleError = require('./backend/lib/error-handler');
@@ -23,13 +23,15 @@ mongoose.connect(mongoDbUri);
 // app.use(cors());
 app.use(morgan('dev'));
 
+// app.get('/')
+
 app.use('/api', authRouter);
 app.use('/api', commentRouter);
 
-// app.all('*', function(req, res, next){
-  // debug('Got error: 404');
-  // next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
-// });
+app.all('*', function(req, res, next){
+  debug('Got error: 404');
+  next(createError(404, `ERROR: ${req.method} :: ${req.url} is not a route`));
+});
 
 app.use(handleError);
 
