@@ -19,6 +19,16 @@ function ParkController($log, $http) {
     });
   };
 
+  this.getSelectedParks = function(sport) {
+    $log.debug('parkCtrl.getSelectedParks');
+    $log.log('sport argument', sport);
+    this.selectedParks = this.parks.filter(function(park) {
+      if(park.sports[0] === sport) return true;
+    });
+    $log.log('this.parks', this.parks);
+    $log.log('this.selectedParks', this.selectedParks);
+  };
+
   this.createPark = function(park) {
     $log.debug('parkCtrl.createPark');
     $http.post(this.baseUrl + '/parks', park, this.config)

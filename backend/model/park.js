@@ -8,7 +8,7 @@ const createError = require('http-errors');
 mongoose.Promise = Promise;
 
 let parkSchema = mongoose.Schema({
-  name: {type: String, required: true},
+  name: {type: String, required: true, unique: true},
   hours: String,
   location: {
     xpos: {type: Number, required: true},
