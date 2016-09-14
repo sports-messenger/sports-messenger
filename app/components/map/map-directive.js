@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (app) => {
-  app.directive('googleMap', function($rootScope, lazyLoadApi) {
+  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function($rootScope, $http, lazyLoadApi) {
     return {
       restrict: 'CA', // restrict by class name
       scope: {
@@ -22,35 +22,37 @@ module.exports = (app) => {
 
       // Initialize the map
         function initializeMap() {
-          location = new google.maps.LatLng(scope.lat, scope.long);
+          var location = new google.maps.LatLng(scope.lat, scope.long);
 
-          mapOptions = {
+          var mapOptions = {
             zoom: 12,
             center: location
           };
 
-          map = new google.maps.Map(element[0], mapOptions);
+          var map = new google.maps.Map(element[0], mapOptions);
 
-          new google.maps.Marker({
+          $http.get(`${__API_URL__}/api` + '/parks', {
+            headers: {
+              'Content-Type': 'appliction/json',
+              'Accept': 'application/json'
+            }
+          }).then(function(res){
+            debugger;
+            res.data.forEach(function(park) {
+              new google.maps.Marker({
+                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
+                map: map
+              });
+            });
+          });
+
+          var marker2 = new google.maps.Marker({
             position: location,
             map: map,
+            title: 'marker1'
           });
         }
       }
     };
-  });
+  }]);
 };
-
-
-//     return {
-//       controller: 'MapController',
-//       controllerAs: 'mapCtrl',
-//       template: require('./map-template.html'),
-//       bindToController: true,
-//       scope: {
-//         baseUrl: '@',
-//         config: '='
-//       }
-//     };
-//   });
-// };
