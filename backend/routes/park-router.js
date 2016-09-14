@@ -13,7 +13,7 @@ const jwt_auth = require('../lib/jwt-auth');
 let parkRouter = module.exports = exports = new Router();
 
 // module logic
-parkRouter.post('/', jsonParser, jwt_auth, function(req, res, next){
+parkRouter.post('/', jsonParser, function(req, res, next){
   debug('POST /api/park');
   if (!req.body.name)
     return next(createError(400, 'ERROR: park requires name field'));
