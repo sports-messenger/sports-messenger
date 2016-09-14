@@ -20,10 +20,13 @@ function ParkController($log, $http) {
   };
 
   this.getSelectedParks = function(sport) {
+    this.selectedParks = [];
     $log.debug('parkCtrl.getSelectedParks');
     $log.log('sport argument', sport);
-    this.selectedParks = this.parks.filter(function(park) {
-      if(park.sports[0] === sport) return true;
+    this.parks.forEach((park) => {
+      park.sports.forEach((index) => {
+        if(index === sport) this.selectedParks.push(park);
+      });
     });
     $log.log('this.parks', this.parks);
     $log.log('this.selectedParks', this.selectedParks);
