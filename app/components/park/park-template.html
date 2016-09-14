@@ -1,7 +1,14 @@
-<div class="form-inline" novalidate ng-init="parkCtrl.getAllParks()" ng-submit="map">
+<div ng-init="parkCtrl.getAllParks()">
   <h2>Find A Park</h2>
-  <label for="address">Find A Park Near You:</label>
-  <input type="text" name="address">
+  <div class="form-inline">
+    <label for="address">Enter Your Address to Find A Park Near You:</label>
+    <input type="text" name="address" ng-model="parkCtrl.addressString">
+    <p>How Far Away?</p>
+    <ul>
+      <li ng-repeat="distance in parkCtrl.distances"><button type="button" ng-click="parkCtrl.setNearbyParks(distance)">{{distance}} miles from current location</button></li>
+    </ul>
+  </div>
+  <p>Choose A Sport:</p>
   <ul>
     <li ng-repeat="sport in parkCtrl.sports"><button type="button" ng-click="parkCtrl.setSelectedParks(sport)"> {{sport}}</button></li>
   </ul>

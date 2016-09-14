@@ -55,7 +55,8 @@ module.exports = (app) => {
           });
         }
         function setNewMap() {
-          location = parkMapCombine.getAddressPoint();
+          let newLocation = parkMapCombine.getAddressPoint();
+          location = new google.maps.LatLng(newLocation.lat, newLocation.lng);
           mapOptions = {zoom: 12, center: location};
           map = new google.maps.Map([element[0], mapOptions]);
           mapPoints = parkMapCombine.getArray();
