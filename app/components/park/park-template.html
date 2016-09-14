@@ -1,10 +1,7 @@
 <div class="form-inline" novalidate ng-init="parkCtrl.getAllParks()" ng-submit="map">
   <h2>Find A Park</h2>
   <label for="address">Find A Park Near You:</label>
-  <input type="button" name="address" value="">
-  <select class="" name="">
-    <option ng-repeat="distance in mapCtrl.distances" value="distance">{{distance}} miles</option>
-  </select>
+  <input type="text" name="address">
   <ul>
     <li ng-repeat="sport in parkCtrl.sports"><button type="button" ng-click="parkCtrl.getSelectedParks(sport)"> {{sport}}</button></li>
   </ul>

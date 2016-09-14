@@ -8,7 +8,7 @@ function ParkController($log, $http) {
   this.parks = [];
   this.selectedParks = [];
   this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
-
+  this.distances = [1, 5, 10, 20];
   this.getAllParks = function() {
     $log.debug('parkCtrl.getAllParks');
     $http.get(this.baseUrl + '/parks', this.config)
