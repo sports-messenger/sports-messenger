@@ -1,4 +1,28 @@
-.google-map{
+@import "./vendor/normalize-scss/sass/_normalize.scss";
+@import "./vendor/bootstrap/assets/stylesheets/_bootstrap.scss";
+@import "./vendor/font-awesome-4.6.3/scss/font-awesome.scss";
+
+@include normalize();
+
+h1 {
+  font-size: 5px;
+}
+
+.navbar-brand {
+  float: left;
+}
+
+.nav-list {
+  float: right;
+  list-style-type: none;
+}
+
+.nav-links {
+  display: block;
+  padding: 20px;
+}
+
+.google-map {
   width:  1000px;
   height: 500px;
   margin: 0 auto;

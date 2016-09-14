@@ -49,8 +49,8 @@ describe('CRUD comment tests', () => {
       .end((err, res) => {
         expect(err).to.eql(null);
         expect(res).to.have.status(200);
-        expect(res.body.text).to.eql('this should be a comment')
+        expect(res.body.text).to.eql('this should be a comment');
         done();
-      })
+      });
   });
 });
