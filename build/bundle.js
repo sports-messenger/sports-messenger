@@ -50,11 +50,11 @@
 	__webpack_require__(2);
 
 	var angular = __webpack_require__(12);
-	var projectApp = angular.module('projectApp', [__webpack_require__(14)]);
+	var projectApp = angular.module('projectApp', [__webpack_require__(14), __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-jwt\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()))]);
 
 	__webpack_require__(16)(projectApp);
-	__webpack_require__(18)(projectApp);
-	__webpack_require__(37)(projectApp);
+	__webpack_require__(19)(projectApp);
+	__webpack_require__(40)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
 	  $rs.baseUrl = ("http://localhost:3000") + '/api';
@@ -68,13 +68,13 @@
 
 	projectApp.config(['$routeProvider', function ($rp) {
 	  $rp.when('/parks', {
-	    template: __webpack_require__(40)
-	  }).when('/home', {
-	    template: __webpack_require__(41)
-	  }).when('/parks/:id', {
-	    template: __webpack_require__(42)
-	  }).when('/map', {
 	    template: __webpack_require__(43)
+	  }).when('/home', {
+	    template: __webpack_require__(44)
+	  }).when('/parks/:id', {
+	    template: __webpack_require__(45)
+	  }).when('/map', {
+	    template: __webpack_require__(46)
 	    // controller: 'MapController'
 	  }).otherwise({
 	    redirectTo: 'home'
@@ -32974,6 +32974,7 @@
 
 	module.exports = function (app) {
 	  __webpack_require__(17)(app);
+	  __webpack_require__(18)(app);
 	};
 
 /***/ },
@@ -33009,17 +33010,40 @@
 
 /***/ },
 /* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(19)(app);
-	  __webpack_require__(21)(app);
-	  __webpack_require__(23)(app);
-	  __webpack_require__(27)(app);
-	  __webpack_require__(29)(app);
-	  __webpack_require__(33)(app);
+	  app.factory('auth', ['$window', 'jwtHelper', '$location', function ($window, jwt, $location) {
+	    return {
+	      currentUser: {},
+	      getToken: function getToken(options) {
+	        options = options || {};
+	        if (this.token) return this.token;
+	        if ($window.localStorage.token) return this.setToken($window.localStorage.token);
+	        if (!options.noRedirect) $location.path('./signup');
+	      },
+	      setToken: function setToken(token) {
+	        $window.localStorage.token = token;
+	        this.token = token;
+	        this.getUser();
+	        return token;
+	      },
+	      getUser: function getUser() {
+	        var token = this.getToken();
+	        if (!token) return;
+	        var decoded = jwt.decodeToken(token);
+	        this.currentUser.username = decoded.username;
+	        return this.currentUser;
+	      },
+	      deleteToken: function deleteToken() {
+	        $window.localStore.token = '';
+	        this.token = '';
+	        $location.path('/home');
+	      }
+	    };
+	  }]);
 	};
 
 /***/ },
@@ -33029,9 +33053,25 @@
 	'use strict';
 
 	module.exports = function (app) {
+	  __webpack_require__(20)(app);
+	  __webpack_require__(22)(app);
+	  __webpack_require__(24)(app);
+	  __webpack_require__(28)(app);
+	  __webpack_require__(30)(app);
+	  __webpack_require__(34)(app);
+	  __webpack_require__(38)(app);
+	};
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
 	  app.component('signUp', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(20),
+	    template: __webpack_require__(21),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33039,13 +33079,13 @@
 	};
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
-	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\n  <div class=\"form-group\">\n    <label for=\"email\">Email </label>\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password </label>\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  </div>\n  <div>\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\n  </div>\n</form>\n";
+	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\r\n  <div class=\"form-group\">\r\n    <label for=\"email\">Email </label>\r\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"password\">Password </label>\r\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\r\n  </div>\r\n  <div>\r\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\r\n  </div>\r\n</form>\r\n";
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33053,7 +33093,7 @@
 	module.exports = function (app) {
 	  app.component('logIn', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(22),
+	    template: __webpack_require__(23),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33061,24 +33101,24 @@
 	};
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
-	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\n  <label for=\"email\">Email:</label>\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\n  <label for=\"password\">Password:</label>\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\n</form>\n";
+	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\r\n  <label for=\"email\">Email:</label>\r\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\r\n  <label for=\"password\">Password:</label>\r\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\r\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\r\n</form>\r\n";
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(24)(app);
 	  __webpack_require__(25)(app);
+	  __webpack_require__(26)(app);
 	};
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33091,7 +33131,7 @@
 	  this.parks = [];
 	  this.selectedParks = [];
 	  this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
-
+	  this.distances = [1, 5, 10, 20];
 	  this.getAllParks = function () {
 	    var _this = this;
 
@@ -33104,33 +33144,38 @@
 	  };
 
 	  this.getSelectedParks = function (sport) {
+	    var _this2 = this;
+
+	    this.selectedParks = [];
 	    $log.debug('parkCtrl.getSelectedParks');
 	    $log.log('sport argument', sport);
-	    this.selectedParks = this.parks.filter(function (park) {
-	      if (park.sports[0] === sport) return true;
+	    this.parks.forEach(function (park) {
+	      park.sports.forEach(function (index) {
+	        if (index === sport) _this2.selectedParks.push(park);
+	      });
 	    });
 	    $log.log('this.parks', this.parks);
 	    $log.log('this.selectedParks', this.selectedParks);
 	  };
 
 	  this.createPark = function (park) {
-	    var _this2 = this;
+	    var _this3 = this;
 
 	    $log.debug('parkCtrl.createPark');
 	    $http.post(this.baseUrl + '/parks', park, this.config).then(function (res) {
 	      $log.log('successfully created park', res.data);
-	      _this2.parks.push(res.data);
+	      _this3.parks.push(res.data);
 	    }).catch(function (err) {
 	      $log.error('error in parkCtrl.createPark', err);
 	    });
 	  };
 
 	  this.deletePark = function (park) {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    $log.debug('parkCtrl.deletePark');
 	    $http.delete(this.baseUrl + '/parks/' + park._id, this.config).then(function (res) {
-	      _this3.parks.splice(_this3.parks.indexOf(park), 1);
+	      _this4.parks.splice(_this4.parks.indexOf(park), 1);
 	      $log.log('parkCtrl.deletePark res', res);
 	    }, function (err) {
 	      $log.error('error in parkCtrl.deletePark', err);
@@ -33149,7 +33194,7 @@
 	}
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33159,7 +33204,7 @@
 	    return {
 	      controller: 'ParkController',
 	      controllerAs: 'parkCtrl',
-	      template: __webpack_require__(26),
+	      template: __webpack_require__(27),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33170,23 +33215,23 @@
 	};
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\n  <h2>Find A Park</h2>\n  <label for=\"address\">Find A Park Near You:</label>\n  <input type=\"button\" name=\"address\" value=\"\">\n  <select class=\"\" name=\"\">\n    <option ng-repeat=\"distance in mapCtrl.distances\" value=\"distance\">{{distance}} miles</option>\n  </select>\n  <ul>\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\n  </ul>\n</div>\n";
+	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\r\n  <h2>Find A Park</h2>\r\n  <label for=\"address\">Find A Park Near You:</label>\r\n  <input type=\"text\" name=\"address\">\r\n  <ul>\r\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\r\n  </ul>\r\n</div>\r\n";
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(28)(app);
+	  __webpack_require__(29)(app);
 	};
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33219,7 +33264,6 @@
 	            zoom: 12,
 	            center: location
 	          };
-
 	          var map = new google.maps.Map(element[0], mapOptions);
 
 	          $http.get(("http://localhost:3000") + '/api' + '/parks', {
@@ -33228,19 +33272,19 @@
 	              'Accept': 'application/json'
 	            }
 	          }).then(function (res) {
+	            console.log(res.data);
 	            res.data.forEach(function (park) {
+	              // var newLocation = new google.maps.LatLng(park.location);
 	              var marker = new google.maps.Marker({
-	                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
+	                position: new google.maps.LatLng(park.location.ypos, park.location.xpos),
 	                map: map
 	              });
-	              marker.setMap(map);
+	              debugger;
 	            });
 	          });
-
 	          var marker = new google.maps.Marker({
 	            position: location,
-	            map: map,
-	            title: 'marker1'
+	            map: map
 	          });
 	        }
 	      }
@@ -33249,18 +33293,18 @@
 	};
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(30)(app);
 	  __webpack_require__(31)(app);
+	  __webpack_require__(32)(app);
 	};
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33336,7 +33380,7 @@
 	};
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33346,7 +33390,7 @@
 	    return {
 	      controller: 'CommentController',
 	      controllerAs: 'commentCtrl',
-	      template: __webpack_require__(32),
+	      template: __webpack_require__(33),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33359,24 +33403,24 @@
 	};
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
+	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\r\n  <p>{{commentCtrl.comments[0].username}}</p>\r\n  <p>{{commentCtrl.comments[0].text}}</p>\r\n  <p>{{commentCtrl.comments[0].date}}</p>\r\n  <p>\r\n    {{commentCtrl.comments[0].compRating}}\r\n  </p>\r\n  <p>\r\n    {{commentCtrl.comments[0].busyRating}}\r\n  </p>\r\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\r\n</div>\r\n";
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(34)(app);
 	  __webpack_require__(35)(app);
+	  __webpack_require__(36)(app);
 	};
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33399,7 +33443,7 @@
 	};
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33409,7 +33453,7 @@
 	    return {
 	      controller: 'CommentFormController',
 	      controllerAs: 'cfCtrl',
-	      template: __webpack_require__(36),
+	      template: __webpack_require__(37),
 	      transclude: true,
 	      scope: {
 	        commentButtonText: '@',
@@ -33421,37 +33465,60 @@
 	};
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
-	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\n  </select>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
+	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\r\n  <div class=\"form-group\">\r\n    <label for=\"text\">Text:</label>\r\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\r\n  </div>\r\n  <select name=\"compRating\">\r\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\r\n  </select>\r\n  <select name=\"busyRating\">\r\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\r\n  </select>\r\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\r\n  <ng-transclude></ng-transclude>\r\n</form>\r\n";
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(38)(app);
-	  __webpack_require__(39)(app);
+	  app.component('deleteToken', {
+	    controller: 'AuthController',
+	    template: __webpack_require__(39)
+	  });
 	};
 
 /***/ },
-/* 38 */
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = "<h1>Temp Log Out Template</h1>\r\n\r\n<div ng-init=\"$ctrl.getUser()\">\r\n  <p ng-if=\"!$ctrl.currentUser.username\">Are you sure you want to sign out, {{ctrl.currentUser.username}}?</p>\r\n  <button class=\"btn btn-danger\" ng-click=\"$ctrl.deleteToken()\">Sign Out</button>\r\n</div>\r\n";
+
+/***/ },
+/* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  __webpack_require__(41)(app);
+	  __webpack_require__(42)(app);
+	};
+
+/***/ },
+/* 41 */
 /***/ function(module, exports) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  app.controller('AuthController', ['$http', '$location', '$window', '$log', function ($http, $location, $window, $log) {
+	  app.controller('AuthController', ['$http', '$location', '$window', '$log', 'auth', function ($http, $location, $window, $log, auth) {
 	    this.signup = function (user) {
+
 	      $log.debug('$ctrl.signup');
+
 	      $http.post(this.baseUrl + '/signup', user).then(function (res) {
+	        auth.setToken(res.data.token);
 	        $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
 	        $location.path('/home');
 	      }, function (err) {
 	        $log.error('error in $ctrl.signup', err);
+	        $location.path('/home');
 	      });
 	    };
 
@@ -33461,50 +33528,57 @@
 	          'Authorization': 'Basic ' + $window.btoa(user.basic.email + ':' + user.basic.password)
 	        }
 	      }).then(function (res) {
+	        auth.setToken(res.data.token);
 	        $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
-	        $location.path('/home');
+	        $location.path('/map');
 	      }, function (err) {
 	        $log.error('error in $ctrl.login', err);
 	      });
 	    };
+
+	    this.getUser = auth.getUser.bind(auth);
+	    this.deleteToken = auth.deleteToken.bind(auth);
+	    this.currentUser = auth.currentUser;
 	  }]);
 	};
-
-/***/ },
-/* 39 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	module.exports = function (app) {
-	  app.controller('MapController', ['$scope', function ($scope) {
-	    $scope.name = 'World';
-	  }]);
-	};
-
-/***/ },
-/* 40 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"\">\n  <!-- <map-component></map-component> -->\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\n</div>\n";
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n<sign-up base-url=\"baseUrl\"></sign-up>\n";
 
 /***/ },
 /* 42 */
 /***/ function(module, exports) {
 
-	module.exports = "<div>\n  <h2>{{park.name}}</h2>\n  <p>{{park.sports}}</p>\n  <p>{{park.hours}}</p>\n  <ul>\n    <li ng-repeat=\"comment in park.comments\"><sm-comment park=\"{{park}}\" comment=\"{{comment}}\"></sm-comment></li>\n  </ul>\n  <sm-comment-form comment-button-text=\"Add Comment\" save-comment=\"commentCtrl.createComment(comment)\"></sm-comment-form>\n</div>\n";
+	'use strict';
+
+	module.exports = function (app) {
+	  app.controller('MapController', ['$scope', 'auth', function ($scope, auth) {
+	    $scope.name = 'World';
+
+	    this.token = auth.getToken();
+	  }]);
+	};
 
 /***/ },
 /* 43 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-controller=\"MapController\">\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\n</div>\n";
+	module.exports = "<div class=\"\">\r\n  <!-- <map-component></map-component> -->\r\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\r\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\r\n</div>\r\n";
+
+/***/ },
+/* 44 */
+/***/ function(module, exports) {
+
+	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\r\n<sign-up base-url=\"baseUrl\"></sign-up>\r\n<delete-token></delete-token>\r\n";
+
+/***/ },
+/* 45 */
+/***/ function(module, exports) {
+
+	module.exports = "";
+
+/***/ },
+/* 46 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-controller=\"MapController\">\r\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\r\n</div>\r\n";
 
 /***/ }
 /******/ ]);

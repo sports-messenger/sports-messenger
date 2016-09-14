@@ -15,7 +15,7 @@ var options = { method: 'GET',
      accept: 'application/json' },
   };
 
-module.exports = exports =  function() {
+module.exports = exports = function() {
   request(options, function (error, response, data) {
     if (error) throw new Error(error);
     let dataArray = JSON.parse(data);
@@ -51,6 +51,7 @@ module.exports = exports =  function() {
       assert.ok(promise instanceof Promise);
       promise.then(function(savedPark) {
         assert.equal(savedPark.name, newPark.name);
+        console.log(savedPark);
       });
     });
   });

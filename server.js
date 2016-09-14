@@ -18,6 +18,8 @@ const port = process.env.PORT || 3000;
 const mongoDbUri = process.env.MONGODB_URI || 'mongodb://localhost/home';
 process.env.APP_SECRET = 'secret';
 
+// require('./backend/lib/park-data')();
+
 mongoose.Promise = Promise;
 mongoose.connect(mongoDbUri);
 
