@@ -53,8 +53,8 @@
 	var projectApp = angular.module('projectApp', [__webpack_require__(14), __webpack_require__(16)]);
 
 	__webpack_require__(18)(projectApp);
-	__webpack_require__(20)(projectApp);
-	__webpack_require__(41)(projectApp);
+	__webpack_require__(21)(projectApp);
+	__webpack_require__(42)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
 	  $rs.baseUrl = ("http://localhost:3000") + '/api';
@@ -68,13 +68,13 @@
 
 	projectApp.config(['$routeProvider', function ($rp) {
 	  $rp.when('/parks', {
-	    template: __webpack_require__(44)
-	  }).when('/home', {
 	    template: __webpack_require__(45)
-	  }).when('/parks/:id', {
+	  }).when('/home', {
 	    template: __webpack_require__(46)
-	  }).when('/map', {
+	  }).when('/parks/:id', {
 	    template: __webpack_require__(47)
+	  }).when('/map', {
+	    template: __webpack_require__(48)
 	    // controller: 'MapController'
 	  }).otherwise({
 	    redirectTo: 'home'
@@ -33342,6 +33342,7 @@
 
 	module.exports = function (app) {
 	  __webpack_require__(19)(app);
+	  __webpack_require__(20)(app);
 	};
 
 /***/ },
@@ -33377,18 +33378,40 @@
 
 /***/ },
 /* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(21)(app);
-	  __webpack_require__(23)(app);
-	  __webpack_require__(25)(app);
-	  __webpack_require__(29)(app);
-	  __webpack_require__(31)(app);
-	  __webpack_require__(35)(app);
-	  __webpack_require__(39)(app);
+	  app.factory('auth', ['$window', 'jwtHelper', '$location', function ($window, jwt, $location) {
+	    return {
+	      currentUser: {},
+	      getToken: function getToken(options) {
+	        options = options || {};
+	        if (this.token) return this.token;
+	        if ($window.localStorage.token) return this.setToken($window.localStorage.token);
+	        if (!options.noRedirect) $location.path('./signup');
+	      },
+	      setToken: function setToken(token) {
+	        $window.localStorage.token = token;
+	        this.token = token;
+	        this.getUser();
+	        return token;
+	      },
+	      getUser: function getUser() {
+	        var token = this.getToken();
+	        if (!token) return;
+	        var decoded = jwt.decodeToken(token);
+	        this.currentUser.username = decoded.username;
+	        return this.currentUser;
+	      },
+	      deleteToken: function deleteToken() {
+	        $window.localStore.token = '';
+	        this.token = '';
+	        $location.path('/home');
+	      }
+	    };
+	  }]);
 	};
 
 /***/ },
@@ -33398,9 +33421,25 @@
 	'use strict';
 
 	module.exports = function (app) {
+	  __webpack_require__(22)(app);
+	  __webpack_require__(24)(app);
+	  __webpack_require__(26)(app);
+	  __webpack_require__(30)(app);
+	  __webpack_require__(32)(app);
+	  __webpack_require__(36)(app);
+	  __webpack_require__(40)(app);
+	};
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
 	  app.component('signUp', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(22),
+	    template: __webpack_require__(23),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33408,13 +33447,13 @@
 	};
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\n  <div class=\"form-group\">\n    <label for=\"email\">Email </label>\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password </label>\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  </div>\n  <div>\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\n  </div>\n</form>\n";
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33422,7 +33461,7 @@
 	module.exports = function (app) {
 	  app.component('logIn', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(24),
+	    template: __webpack_require__(25),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33430,24 +33469,24 @@
 	};
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\n  <label for=\"email\">Email:</label>\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\n  <label for=\"password\">Password:</label>\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\n</form>\n";
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(26)(app);
 	  __webpack_require__(27)(app);
+	  __webpack_require__(28)(app);
 	};
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33523,7 +33562,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33533,7 +33572,7 @@
 	    return {
 	      controller: 'ParkController',
 	      controllerAs: 'parkCtrl',
-	      template: __webpack_require__(28),
+	      template: __webpack_require__(29),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33544,23 +33583,23 @@
 	};
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\n  <h2>Find A Park</h2>\n  <label for=\"address\">Find A Park Near You:</label>\n  <input type=\"text\" name=\"address\">\n  <ul>\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\n  </ul>\n</div>\n";
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(30)(app);
+	  __webpack_require__(31)(app);
 	};
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33623,18 +33662,18 @@
 	};
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(32)(app);
 	  __webpack_require__(33)(app);
+	  __webpack_require__(34)(app);
 	};
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33710,7 +33749,7 @@
 	};
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33720,7 +33759,7 @@
 	    return {
 	      controller: 'CommentController',
 	      controllerAs: 'commentCtrl',
-	      template: __webpack_require__(34),
+	      template: __webpack_require__(35),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33733,24 +33772,24 @@
 	};
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(36)(app);
 	  __webpack_require__(37)(app);
+	  __webpack_require__(38)(app);
 	};
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33773,7 +33812,7 @@
 	};
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33783,7 +33822,7 @@
 	    return {
 	      controller: 'CommentFormController',
 	      controllerAs: 'cfCtrl',
-	      template: __webpack_require__(38),
+	      template: __webpack_require__(39),
 	      transclude: true,
 	      scope: {
 	        commentButtonText: '@',
@@ -33795,13 +33834,13 @@
 	};
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\n  </select>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33809,29 +33848,29 @@
 	module.exports = function (app) {
 	  app.component('deleteToken', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(40)
+	    template: __webpack_require__(41)
 	  });
 	};
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
-	module.exports = "<h1>Temp Log Out Template</h1>\n\n<div ng-init=\"$ctrl.getUser()\">\n  <p ng-if=\"!$ctrl.currentUser.username\">Are you sure you want to sign out, {{ctrl..currentUser.username}}?</p>\n  <button class=\"btn btn-danger\" ng-click=\"$ctrl.deleteToken()\">Sign Out</button>\n</div>\n";
+	module.exports = "<h1>Temp Log Out Template</h1>\n\n<div ng-init=\"$ctrl.getUser()\">\n  <p ng-if=\"!$ctrl.currentUser.username\">Are you sure you want to sign out, {{ctrl.currentUser.username}}?</p>\n  <button class=\"btn btn-danger\" ng-click=\"$ctrl.deleteToken()\">Sign Out</button>\n</div>\n";
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(42)(app);
 	  __webpack_require__(43)(app);
+	  __webpack_require__(44)(app);
 	};
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33873,7 +33912,7 @@
 	};
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33887,25 +33926,25 @@
 	};
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"\">\n  <!-- <map-component></map-component> -->\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\n</div>\n";
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n<sign-up base-url=\"baseUrl\"></sign-up>\n<delete-token></delete-token>\n";
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	module.exports = "";
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	module.exports = "<div ng-controller=\"MapController\">\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\n</div>\n";
