@@ -6,6 +6,7 @@ require('./scss/base.scss');
 const angular = require('angular');
 const projectApp = angular.module('projectApp', [require('angular-route')]);
 
+require('./services')(projectApp);
 require('./components')(projectApp);
 require('./controllers')(projectApp);
 
@@ -29,6 +30,10 @@ projectApp.config(['$routeProvider', ($rp) => {
   })
   .when('/parks/:id', {
     template: require('./components/single-park/single-park-template.html')
+  })
+  .when('/map', {
+    template: require('./html/map.html')
+    // controller: 'MapController'
   })
   .otherwise({
     redirectTo: 'home'

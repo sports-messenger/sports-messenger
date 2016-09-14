@@ -21,6 +21,7 @@
   "homepage": "https://github.com/sports-messenger/sports-messenger#readme",
   "dependencies": {
     "angular": "^1.5.8",
+    "angular-google-maps": "^2.3.4",
     "angular-route": "^1.5.8",
     "autoprefixer": "^6.4.1",
     "babel-core": "^6.14.0",
