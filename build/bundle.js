@@ -49,11 +49,12 @@
 	__webpack_require__(1);
 	__webpack_require__(2);
 
-	var angular = __webpack_require__(5);
-	var projectApp = angular.module('projectApp', [__webpack_require__(7)]);
+	var angular = __webpack_require__(12);
+	var projectApp = angular.module('projectApp', [__webpack_require__(14)]);
 
-	__webpack_require__(9)(projectApp);
-	__webpack_require__(26)(projectApp);
+	__webpack_require__(16)(projectApp);
+	__webpack_require__(18)(projectApp);
+	__webpack_require__(37)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
 	  $rs.baseUrl = ("http://localhost:3000") + '/api';
@@ -67,11 +68,14 @@
 
 	projectApp.config(['$routeProvider', function ($rp) {
 	  $rp.when('/parks', {
-	    template: __webpack_require__(28)
+	    template: __webpack_require__(40)
 	  }).when('/home', {
-	    template: __webpack_require__(29)
+	    template: __webpack_require__(41)
 	  }).when('/parks/:id', {
-	    template: __webpack_require__(30)
+	    template: __webpack_require__(42)
+	  }).when('/map', {
+	    template: __webpack_require__(43)
+	    // controller: 'MapController'
 	  }).otherwise({
 	    redirectTo: 'home'
 	  });
@@ -85,293 +89,29 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"!!./../../node_modules/css-loader/index.js!./../../node_modules/postcss-loader/index.js!./../../node_modules/sass-loader/index.js!!./base.scss\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/postcss-loader/index.js!./../../node_modules/sass-loader/index.js!!./base.scss", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/postcss-loader/index.js!./../../node_modules/sass-loader/index.js!!./base.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
+	// removed by extract-text-webpack-plugin
 
 /***/ },
 /* 3 */,
-/* 4 */
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		var blob = new Blob([css], { type: "text/css" });
-
-		var oldSrc = linkElement.href;
-
-		linkElement.href = URL.createObjectURL(blob);
-
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(6);
+	__webpack_require__(13);
 	module.exports = angular;
 
 
 /***/ },
-/* 6 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/**
@@ -32144,15 +31884,15 @@
 	!window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 
 /***/ },
-/* 7 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(8);
+	__webpack_require__(15);
 	module.exports = 'ngRoute';
 
 
 /***/ },
-/* 8 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/**
@@ -33227,21 +32967,62 @@
 
 
 /***/ },
-/* 9 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(10)(app);
-	  __webpack_require__(12)(app);
-	  __webpack_require__(14)(app);
-	  __webpack_require__(18)(app);
-	  __webpack_require__(22)(app);
+	  __webpack_require__(17)(app);
 	};
 
 /***/ },
-/* 10 */
+/* 17 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  app.service('lazyLoadApi', function lazyLoadApi($window, $q) {
+	    function loadScript() {
+	      console.log('loadScript');
+	      // use global document since Angular's $document is weak
+	      var s = document.createElement('script');
+	      s.src = '//maps.googleapis.com/maps/api/js?sensor=false&language=en&callback=initMap';
+	      document.body.appendChild(s);
+	    }
+	    var deferred = $q.defer();
+
+	    $window.initMap = function () {
+	      deferred.resolve();
+	    };
+
+	    if ($window.attachEvent) {
+	      $window.attachEvent('onload', loadScript);
+	    } else {
+	      $window.addEventListener('load', loadScript, false);
+	    }
+	    return deferred.promise;
+	  });
+	};
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  __webpack_require__(19)(app);
+	  __webpack_require__(21)(app);
+	  __webpack_require__(23)(app);
+	  __webpack_require__(27)(app);
+	  __webpack_require__(29)(app);
+	  __webpack_require__(33)(app);
+	};
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33249,7 +33030,7 @@
 	module.exports = function (app) {
 	  app.component('signUp', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(11),
+	    template: __webpack_require__(20),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33257,13 +33038,13 @@
 	};
 
 /***/ },
-/* 11 */
+/* 20 */
 /***/ function(module, exports) {
 
-	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\n    <label for=\"email\">Email:</label>\n    <input type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\n    <label for=\"password\">Password:</label>\n    <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n    <button type=\"submit\" class=\"btn btn-danger\">Sign Up</button>\n</form>\n";
+	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\n  <div class=\"form-group\">\n    <label for=\"email\">Email </label>\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password </label>\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  </div>\n  <div>\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\n  </div>\n</form>\n";
 
 /***/ },
-/* 12 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33271,7 +33052,7 @@
 	module.exports = function (app) {
 	  app.component('logIn', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(13),
+	    template: __webpack_require__(22),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33279,24 +33060,24 @@
 	};
 
 /***/ },
-/* 13 */
+/* 22 */
 /***/ function(module, exports) {
 
 	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\n  <label for=\"email\">Email:</label>\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\n  <label for=\"password\">Password:</label>\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\n</form>\n";
 
 /***/ },
-/* 14 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(15)(app);
-	  __webpack_require__(16)(app);
+	  __webpack_require__(24)(app);
+	  __webpack_require__(25)(app);
 	};
 
 /***/ },
-/* 15 */
+/* 24 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33319,6 +33100,16 @@
 	    }, function (err) {
 	      $log.error('error in parkCtrl.getAllParks', err);
 	    });
+	  };
+
+	  this.getSelectedParks = function (sport) {
+	    $log.debug('parkCtrl.getSelectedParks');
+	    $log.log('sport argument', sport);
+	    this.selectedParks = this.parks.filter(function (park) {
+	      if (park.sports[0] === sport) return true;
+	    });
+	    $log.log('this.parks', this.parks);
+	    $log.log('this.selectedParks', this.selectedParks);
 	  };
 
 	  this.createPark = function (park) {
@@ -33357,7 +33148,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33367,7 +33158,7 @@
 	    return {
 	      controller: 'ParkController',
 	      controllerAs: 'parkCtrl',
-	      template: __webpack_require__(17),
+	      template: __webpack_require__(26),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33378,24 +33169,94 @@
 	};
 
 /***/ },
-/* 17 */
+/* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<form class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\n  <h2>Find A Park</h2>\n  <label for=\"address\">Find A Park Near You:</label>\n  <input type=\"button\" name=\"address\" value=\"\">\n  <select class=\"\" name=\"\">\n    <option ng-repeat=\"distance in mapCtrl.distances\" value=\"distance\">{{distance}} miles</option>\n  </select>\n  <select class=\"\" name=\"\">\n    <option ng-repeat=\"sport in parkCtrl.sports\" value=\"{{sport}}\">{{sport}}</option>\n  </select>\n  <button type=\"submit\">Submit</button>\n</form>\n";
+	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\n  <h2>Find A Park</h2>\n  <label for=\"address\">Find A Park Near You:</label>\n  <input type=\"button\" name=\"address\" value=\"\">\n  <select class=\"\" name=\"\">\n    <option ng-repeat=\"distance in mapCtrl.distances\" value=\"distance\">{{distance}} miles</option>\n  </select>\n  <ul>\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\n  </ul>\n</div>\n";
 
 /***/ },
-/* 18 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(19)(app);
-	  __webpack_require__(20)(app);
+	  __webpack_require__(28)(app);
 	};
 
 /***/ },
-/* 19 */
+/* 28 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  app.directive('googleMap', function ($rootScope, lazyLoadApi) {
+	    return {
+	      restrict: 'CA', // restrict by class name
+	      scope: {
+	        mapId: '@id', // map ID
+	        lat: '@', // latitude
+	        long: '@' // longitude
+	      },
+	      link: function link(scope, element, attrs) {
+	        var location = null;
+	        var map = null;
+	        var mapOptions = null;
+
+	        // Check if latitude and longitude are specified
+	        if (angular.isDefined(scope.lat) && angular.isDefined(scope.long)) {
+	          // Loads google map script
+	          lazyLoadApi.then(initializeMap);
+	        }
+
+	        // Initialize the map
+	        function initializeMap() {
+	          location = new google.maps.LatLng(scope.lat, scope.long);
+
+	          mapOptions = {
+	            zoom: 12,
+	            center: location
+	          };
+
+	          map = new google.maps.Map(element[0], mapOptions);
+
+	          new google.maps.Marker({
+	            position: location,
+	            map: map
+	          });
+	        }
+	      }
+	    };
+	  });
+	};
+
+	//     return {
+	//       controller: 'MapController',
+	//       controllerAs: 'mapCtrl',
+	//       template: require('./map-template.html'),
+	//       bindToController: true,
+	//       scope: {
+	//         baseUrl: '@',
+	//         config: '='
+	//       }
+	//     };
+	//   });
+	// };
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  __webpack_require__(30)(app);
+	  __webpack_require__(31)(app);
+	};
+
+/***/ },
+/* 30 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33471,7 +33332,7 @@
 	};
 
 /***/ },
-/* 20 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33481,7 +33342,7 @@
 	    return {
 	      controller: 'CommentController',
 	      controllerAs: 'commentCtrl',
-	      template: __webpack_require__(21),
+	      template: __webpack_require__(32),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33494,24 +33355,24 @@
 	};
 
 /***/ },
-/* 21 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
 
 /***/ },
-/* 22 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(23)(app);
-	  __webpack_require__(24)(app);
+	  __webpack_require__(34)(app);
+	  __webpack_require__(35)(app);
 	};
 
 /***/ },
-/* 23 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33534,7 +33395,7 @@
 	};
 
 /***/ },
-/* 24 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33544,7 +33405,7 @@
 	    return {
 	      controller: 'CommentFormController',
 	      controllerAs: 'cfCtrl',
-	      template: __webpack_require__(25),
+	      template: __webpack_require__(36),
 	      transclude: true,
 	      scope: {
 	        commentButtonText: '@',
@@ -33556,23 +33417,24 @@
 	};
 
 /***/ },
-/* 25 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\n  </select>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
 
 /***/ },
-/* 26 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(27)(app);
+	  __webpack_require__(38)(app);
+	  __webpack_require__(39)(app);
 	};
 
 /***/ },
-/* 27 */
+/* 38 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33605,22 +33467,40 @@
 	};
 
 /***/ },
-/* 28 */
+/* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"\">\n  <!-- <map-component></map-component> -->\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\n</div>\n";
+	'use strict';
+
+	module.exports = function (app) {
+	  app.controller('MapController', ['$scope', function ($scope) {
+	    $scope.name = 'World';
+	  }]);
+	};
 
 /***/ },
-/* 29 */
+/* 40 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"\">\n  <!-- <map-component></map-component> -->\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\n</div>\n";
+
+/***/ },
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n<sign-up base-url=\"baseUrl\"></sign-up>\n";
 
 /***/ },
-/* 30 */
+/* 42 */
 /***/ function(module, exports) {
 
 	module.exports = "<div>\n  <h2>{{park.name}}</h2>\n  <p>{{park.sports}}</p>\n  <p>{{park.hours}}</p>\n  <ul>\n    <li ng-repeat=\"comment in park.comments\"><sm-comment park=\"{{park}}\" comment=\"{{comment}}\"></sm-comment></li>\n  </ul>\n  <sm-comment-form comment-button-text=\"Add Comment\" save-comment=\"commentCtrl.createComment(comment)\"></sm-comment-form>\n</div>\n";
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	module.exports = "<div ng-controller=\"MapController\">\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\n</div>\n";
 
 /***/ }
 /******/ ]);

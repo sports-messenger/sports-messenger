@@ -6,7 +6,8 @@ module.exports = (app) => {
       console.log('loadScript');
         // use global document since Angular's $document is weak
       var s = document.createElement('script');
-      s.src = '//maps.googleapis.com/maps/api/js?sensor=false&language=en&callback=initMap';
+      var key = 'AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw';
+      s.src = '//maps.googleapis.com/maps/api/js?key='+key+'&language=en&callback=initMap';
       document.body.appendChild(s);
     }
     var deferred = $q.defer();
