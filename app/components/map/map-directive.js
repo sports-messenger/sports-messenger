@@ -26,9 +26,8 @@ module.exports = (app) => {
 
           var mapOptions = {
             zoom: 12,
-            center: location
+            center: location,
           };
-
           var map = new google.maps.Map(element[0], mapOptions);
 
           $http.get(`${__API_URL__}/api` + '/parks', {
@@ -37,19 +36,19 @@ module.exports = (app) => {
               'Accept': 'application/json'
             }
           }).then(function(res){
-            debugger;
+            console.log(res.data);
             res.data.forEach(function(park) {
-              new google.maps.Marker({
-                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
+              // var newLocation = new google.maps.LatLng(park.location);
+              var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(park.location.ypos, park.location.xpos),
                 map: map
               });
+              debugger;
             });
           });
-
-          var marker2 = new google.maps.Marker({
+          var marker = new google.maps.Marker({
             position: location,
             map: map,
-            title: 'marker1'
           });
         }
       }
