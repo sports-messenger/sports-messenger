@@ -32988,7 +32988,8 @@
 	      console.log('loadScript');
 	      // use global document since Angular's $document is weak
 	      var s = document.createElement('script');
-	      s.src = '//maps.googleapis.com/maps/api/js?sensor=false&language=en&callback=initMap';
+	      var key = 'AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw';
+	      s.src = '//maps.googleapis.com/maps/api/js?key=' + key + '&language=en&callback=initMap';
 	      document.body.appendChild(s);
 	    }
 	    var deferred = $q.defer();
@@ -33186,12 +33187,12 @@
 
 /***/ },
 /* 28 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  app.directive('googleMap', function ($rootScope, lazyLoadApi) {
+	  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function ($rootScope, $http, lazyLoadApi) {
 	    return {
 	      restrict: 'CA', // restrict by class name
 	      scope: {
@@ -33212,37 +33213,40 @@
 
 	        // Initialize the map
 	        function initializeMap() {
-	          location = new google.maps.LatLng(scope.lat, scope.long);
+	          var location = new google.maps.LatLng(scope.lat, scope.long);
 
-	          mapOptions = {
+	          var mapOptions = {
 	            zoom: 12,
 	            center: location
 	          };
 
-	          map = new google.maps.Map(element[0], mapOptions);
+	          var map = new google.maps.Map(element[0], mapOptions);
 
-	          new google.maps.Marker({
+	          $http.get(("http://localhost:3000") + '/api' + '/parks', {
+	            headers: {
+	              'Content-Type': 'appliction/json',
+	              'Accept': 'application/json'
+	            }
+	          }).then(function (res) {
+	            res.data.forEach(function (park) {
+	              var marker = new google.maps.Marker({
+	                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
+	                map: map
+	              });
+	              marker.setMap(map);
+	            });
+	          });
+
+	          var marker = new google.maps.Marker({
 	            position: location,
-	            map: map
+	            map: map,
+	            title: 'marker1'
 	          });
 	        }
 	      }
 	    };
-	  });
+	  }]);
 	};
-
-	//     return {
-	//       controller: 'MapController',
-	//       controllerAs: 'mapCtrl',
-	//       template: require('./map-template.html'),
-	//       bindToController: true,
-	//       scope: {
-	//         baseUrl: '@',
-	//         config: '='
-	//       }
-	//     };
-	//   });
-	// };
 
 /***/ },
 /* 29 */
