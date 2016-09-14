@@ -1,14 +1,16 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('ParkController', ['$log', '$http', ParkController]);
+  app.controller('ParkController', ['$log', '$http', 'parksMapCombine', ParkController]);
 };
 
-function ParkController($log, $http) {
+function ParkController($log, $http, parksMapCombine) {
+  this.addressPoint = null;
   this.parks = [];
   this.selectedParks = [];
   this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
   this.distances = [1, 5, 10, 20];
+
   this.getAllParks = function() {
     $log.debug('parkCtrl.getAllParks');
     $http.get(this.baseUrl + '/parks', this.config)
@@ -19,24 +21,29 @@ function ParkController($log, $http) {
     });
   };
 
-  this.getSelectedParks = function(sport) {
+  this.setNewAddress = function(inputString) {
+    $log.debug('parkCtrl.setNewAddress');
+    let formattedString = inputString.split('').join('+');
+    $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + formattedString + '&key=AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw').then((res) => {
+
+    });
+  };
+
+  this.setSelectedParks = function(sport) {
     this.selectedParks = [];
     $log.debug('parkCtrl.getSelectedParks');
-    $log.log('sport argument', sport);
     this.parks.forEach((park) => {
       park.sports.forEach((index) => {
         if(index === sport) this.selectedParks.push(park);
       });
     });
-    $log.log('this.parks', this.parks);
-    $log.log('this.selectedParks', this.selectedParks);
+    parksMapCombine.setArray(this.selectedParks);
   };
 
   this.createPark = function(park) {
     $log.debug('parkCtrl.createPark');
     $http.post(this.baseUrl + '/parks', park, this.config)
     .then((res) => {
-      $log.log('successfully created park', res.data);
       this.parks.push(res.data);
     })
     .catch((err) => {

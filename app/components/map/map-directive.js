@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (app) => {
-  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function($rootScope, $http, lazyLoadApi) {
+  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function($rootScope, $http, lazyLoadApi, parkMapCombine) {
     return {
       restrict: 'CA', // restrict by class name
       scope: {
@@ -13,6 +13,8 @@ module.exports = (app) => {
         var location = null;
         var map = null;
         var mapOptions = null;
+        var mapPoints = [];
+
 
       // Check if latitude and longitude are specified
         if (angular.isDefined(scope.lat) && angular.isDefined(scope.long)) {
@@ -37,10 +39,10 @@ module.exports = (app) => {
               'Accept': 'application/json'
             }
           }).then(function(res){
-            debugger;
-            res.data.forEach(function(park) {
+            mapPoints = res.data;
+            mapPoints.forEach(function(park) {
               new google.maps.Marker({
-                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
+                position: new google.maps.LatLng(park.location.ypos, park.location.xpos),
                 map: map
               });
             });
@@ -52,6 +54,16 @@ module.exports = (app) => {
             title: 'marker1'
           });
         }
+        function setNewMap() {
+          location = parkMapCombine.getAddressPoint();
+          mapOptions = {zoom: 12, center: location};
+          map = new google.maps.Map([element[0], mapOptions]);
+          mapPoints = parkMapCombine.getArray();
+          mapPoints.forEach(function(park) {
+            new google.maps.Marker({position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map});
+          });
+        }
+
       }
     };
   }]);
