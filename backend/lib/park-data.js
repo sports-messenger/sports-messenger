@@ -15,10 +15,8 @@ var options = { method: 'GET',
      accept: 'application/json' },
   };
 
-module.exports = exports = function() {
-  console.log('In module');
+module.exports = exports =  function() {
   request(options, function (error, response, data) {
-    console.log('In request');
     if (error) throw new Error(error);
     let dataArray = JSON.parse(data);
     let filteredData = dataArray.filter(function(item) {
@@ -26,19 +24,32 @@ module.exports = exports = function() {
         return true;
       }
     });
-    let formattedData = [];
+    let parkObject = {};
     filteredData.forEach(function(park) {
+      if(parkObject[park.name]) {
+        parkObject[park.name].sports.push(park.feature_desc);
+      }
+      if (!parkObject[park.name]) {
+        parkObject[park.name] = {name: park.name, hours: park.hours, location:{xpos: park.xpos, ypos:park.ypos}, sports: []};
+        parkObject[park.name].sports.push(park.feature_desc);
+      }
+    });
+    let formattedData = [];
+    for (var prop in parkObject) {
+      formattedData.push(parkObject[prop]);
+    }
+
+    formattedData.forEach(function(park) {
       let newPark = new Park();
       newPark.name = park.name;
       newPark.hours = park.hours;
-      newPark.location.ypos = parseFloat(park.ypos);
-      newPark.location.xpos = parseFloat(park.xpos);
-      newPark.sports.push(park.feature_desc);
-      formattedData.push(newPark);
+      newPark.location.xpos = parseFloat(park.location.xpos);
+      newPark.location.ypos = parseFloat(park.location.ypos);
+      newPark.sports = park.sports;
+      newPark.comments = [];
       let promise = newPark.save();
       assert.ok(promise instanceof Promise);
       promise.then(function(savedPark) {
-        console.log('inside promise.then');
         assert.equal(savedPark.name, newPark.name);
       });
     });
