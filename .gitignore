@@ -39,3 +39,5 @@ jspm_packages
 # user additions
 db
 node_modules
+build
+vendors
