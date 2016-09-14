@@ -50,11 +50,11 @@
 	__webpack_require__(2);
 
 	var angular = __webpack_require__(12);
-	var projectApp = angular.module('projectApp', [__webpack_require__(14), __webpack_require__(16)]);
+	var projectApp = angular.module('projectApp', [__webpack_require__(14), __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-jwt\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()))]);
 
-	__webpack_require__(18)(projectApp);
-	__webpack_require__(20)(projectApp);
-	__webpack_require__(41)(projectApp);
+	__webpack_require__(16)(projectApp);
+	__webpack_require__(19)(projectApp);
+	__webpack_require__(39)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
 	  $rs.baseUrl = ("http://localhost:3000") + '/api';
@@ -68,13 +68,13 @@
 
 	projectApp.config(['$routeProvider', function ($rp) {
 	  $rp.when('/parks', {
-	    template: __webpack_require__(44)
+	    template: __webpack_require__(42)
 	  }).when('/home', {
-	    template: __webpack_require__(45)
+	    template: __webpack_require__(43)
 	  }).when('/parks/:id', {
-	    template: __webpack_require__(46)
+	    template: __webpack_require__(44)
 	  }).when('/map', {
-	    template: __webpack_require__(47)
+	    template: __webpack_require__(45)
 	    // controller: 'MapController'
 	  }).otherwise({
 	    redirectTo: 'home'
@@ -32970,382 +32970,15 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(17);
-	module.exports = 'angular-jwt';
-
-
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	(function() {
-
-
-	// Create all modules and define dependencies to make sure they exist
-	// and are loaded in the correct order to satisfy dependency injection
-	// before all nested files are concatenated by Grunt
-
-	// Modules
-	angular.module('angular-jwt',
-	    [
-	        'angular-jwt.options',
-	        'angular-jwt.interceptor',
-	        'angular-jwt.jwt',
-	        'angular-jwt.authManager'
-	    ]);
-
-	angular.module('angular-jwt.authManager', [])
-	  .provider('authManager', function () {
-
-	    this.$get = ["$rootScope", "$injector", "$location", "jwtHelper", "jwtInterceptor", "jwtOptions", function ($rootScope, $injector, $location, jwtHelper, jwtInterceptor, jwtOptions) {
-
-	      var config = jwtOptions.getConfig();
-
-	      $rootScope.isAuthenticated = false;
-
-	      function authenticate() {
-	        $rootScope.isAuthenticated = true;
-	      }
-
-	      function unauthenticate() {
-	        $rootScope.isAuthenticated = false;
-	      }
-
-	      function checkAuthOnRefresh() {
-	        $rootScope.$on('$locationChangeStart', function () {
-	          var tokenGetter = config.tokenGetter;
-	          var token = null;
-	          if (Array.isArray(tokenGetter)) {
-	            token = $injector.invoke(tokenGetter, this, {});
-	          } else {
-	            token = config.tokenGetter();
-	          }
-	          if (token) {
-	            if (!jwtHelper.isTokenExpired(token)) {
-	              authenticate();
-	            }
-	          }
-	        });
-	      }
-
-	      function redirectWhenUnauthenticated() {
-	        $rootScope.$on('unauthenticated', function () {
-	          var redirector = config.unauthenticatedRedirector;
-	          if (Array.isArray(redirector)) {
-	            $injector.invoke(redirector, this, {});
-	          } else {
-	            config.unauthenticatedRedirector($location);
-	          }
-	          unauthenticate();
-	        });
-	      }
-
-	      return {
-	        authenticate: authenticate,
-	        unauthenticate: unauthenticate,
-	        checkAuthOnRefresh: checkAuthOnRefresh,
-	        redirectWhenUnauthenticated: redirectWhenUnauthenticated
-	      }
-	    }]
-	  });
-
-	angular.module('angular-jwt.interceptor', [])
-	  .provider('jwtInterceptor', function() {
-
-	    this.urlParam;
-	    this.authHeader;
-	    this.authPrefix;
-	    this.whiteListedDomains;
-	    this.tokenGetter;
-
-	    var config = this;
-
-	    this.$get = ["$q", "$injector", "$rootScope", "urlUtils", "jwtOptions", function($q, $injector, $rootScope, urlUtils, jwtOptions) {
-
-	      var options = angular.extend({}, jwtOptions.getConfig(), config);
-
-	      function isSafe (url) {
-	        if (!urlUtils.isSameOrigin(url) && !options.whiteListedDomains.length) {
-	          throw new Error('As of v0.1.0, requests to domains other than the application\'s origin must be white listed. Use jwtOptionsProvider.config({ whiteListedDomains: [<domain>] }); to whitelist.')
-	        }
-	        var hostname = urlUtils.urlResolve(url).hostname.toLowerCase();
-	        for (var i = 0; i < options.whiteListedDomains.length; i++) {
-	          var domain = options.whiteListedDomains[i].toLowerCase();
-	          if (domain === hostname) {
-	            return true;
-	          }
-	        }
-
-	        if (urlUtils.isSameOrigin(url)) {
-	          return true;
-	        }
-
-	        return false;
-	      }
-
-	      return {
-	        request: function (request) {
-	          if (request.skipAuthorization || !isSafe(request.url)) {
-	            return request;
-	          }
-
-	          if (options.urlParam) {
-	            request.params = request.params || {};
-	            // Already has the token in the url itself
-	            if (request.params[options.urlParam]) {
-	              return request;
-	            }
-	          } else {
-	            request.headers = request.headers || {};
-	            // Already has an Authorization header
-	            if (request.headers[options.authHeader]) {
-	              return request;
-	            }
-	          }
-
-	          var tokenPromise = $q.when($injector.invoke(options.tokenGetter, this, {
-	            options: request
-	          }));
-
-	          return tokenPromise.then(function(token) {
-	            if (token) {
-	              if (options.urlParam) {
-	                request.params[options.urlParam] = token;
-	              } else {
-	                request.headers[options.authHeader] = options.authPrefix + token;
-	              }
-	            }
-	            return request;
-	          });
-	        },
-	        responseError: function (response) {
-	          // handle the case where the user is not authenticated
-	          if (response.status === 401) {
-	            $rootScope.$broadcast('unauthenticated', response);
-	          }
-	          return $q.reject(response);
-	        }
-	      };
-	    }]
-	  });
-	 angular.module('angular-jwt.jwt', [])
-	  .service('jwtHelper', ["$window", function($window) {
-
-	    this.urlBase64Decode = function(str) {
-	      var output = str.replace(/-/g, '+').replace(/_/g, '/');
-	      switch (output.length % 4) {
-	        case 0: { break; }
-	        case 2: { output += '=='; break; }
-	        case 3: { output += '='; break; }
-	        default: {
-	          throw 'Illegal base64url string!';
-	        }
-	      }
-	      return $window.decodeURIComponent(escape($window.atob(output))); //polyfill https://github.com/davidchambers/Base64.js
-	    };
-
-
-	    this.decodeToken = function(token) {
-	      var parts = token.split('.');
-
-	      if (parts.length !== 3) {
-	        throw new Error('JWT must have 3 parts');
-	      }
-
-	      var decoded = this.urlBase64Decode(parts[1]);
-	      if (!decoded) {
-	        throw new Error('Cannot decode the token');
-	      }
-
-	      return angular.fromJson(decoded);
-	    };
-
-	    this.getTokenExpirationDate = function(token) {
-	      var decoded = this.decodeToken(token);
-
-	      if(typeof decoded.exp === "undefined") {
-	        return null;
-	      }
-
-	      var d = new Date(0); // The 0 here is the key, which sets the date to the epoch
-	      d.setUTCSeconds(decoded.exp);
-
-	      return d;
-	    };
-
-	    this.isTokenExpired = function(token, offsetSeconds) {
-	      var d = this.getTokenExpirationDate(token);
-	      offsetSeconds = offsetSeconds || 0;
-	      if (d === null) {
-	        return false;
-	      }
-
-	      // Token expired?
-	      return !(d.valueOf() > (new Date().valueOf() + (offsetSeconds * 1000)));
-	    };
-	  }]);
-
-	angular.module('angular-jwt.options', [])
-	  .provider('jwtOptions', function() {
-	    var globalConfig = {};
-	    this.config = function(value) {
-	      globalConfig = value;
-	    };
-	    this.$get = function() {
-
-	      var options = {
-	        urlParam: null,
-	        authHeader: 'Authorization',
-	        authPrefix: 'Bearer ',
-	        whiteListedDomains: [],
-	        tokenGetter: function() {
-	          return null;
-	        },
-	        loginPath: '/',
-	        unauthenticatedRedirectPath: '/',
-	        unauthenticatedRedirector: function(location) {
-	          location.path(this.unauthenticatedRedirectPath);
-	        }
-	      };
-
-	      function JwtOptions() {
-	        var config = this.config = angular.extend({}, options, globalConfig);
-	      }
-
-	      JwtOptions.prototype.getConfig = function() {
-	        return this.config;
-	      };
-
-	      return new JwtOptions();
-	    }
-	  });
-
-	 /**
-	  * The content from this file was directly lifted from Angular. It is
-	  * unfortunately not a public API, so the best we can do is copy it.
-	  *
-	  * Angular References:
-	  *   https://github.com/angular/angular.js/issues/3299
-	  *   https://github.com/angular/angular.js/blob/d077966ff1ac18262f4615ff1a533db24d4432a7/src/ng/urlUtils.js
-	  */
-
-	 angular.module('angular-jwt.interceptor')
-	  .service('urlUtils', function () {
-
-	    // NOTE:  The usage of window and document instead of $window and $document here is
-	    // deliberate.  This service depends on the specific behavior of anchor nodes created by the
-	    // browser (resolving and parsing URLs) that is unlikely to be provided by mock objects and
-	    // cause us to break tests.  In addition, when the browser resolves a URL for XHR, it
-	    // doesn't know about mocked locations and resolves URLs to the real document - which is
-	    // exactly the behavior needed here.  There is little value is mocking these out for this
-	    // service.
-	    var urlParsingNode = document.createElement("a");
-	    var originUrl = urlResolve(window.location.href);
-
-	    /**
-	     *
-	     * Implementation Notes for non-IE browsers
-	     * ----------------------------------------
-	     * Assigning a URL to the href property of an anchor DOM node, even one attached to the DOM,
-	     * results both in the normalizing and parsing of the URL.  Normalizing means that a relative
-	     * URL will be resolved into an absolute URL in the context of the application document.
-	     * Parsing means that the anchor node's host, hostname, protocol, port, pathname and related
-	     * properties are all populated to reflect the normalized URL.  This approach has wide
-	     * compatibility - Safari 1+, Mozilla 1+, Opera 7+,e etc.  See
-	     * http://www.aptana.com/reference/html/api/HTMLAnchorElement.html
-	     *
-	     * Implementation Notes for IE
-	     * ---------------------------
-	     * IE <= 10 normalizes the URL when assigned to the anchor node similar to the other
-	     * browsers.  However, the parsed components will not be set if the URL assigned did not specify
-	     * them.  (e.g. if you assign a.href = "foo", then a.protocol, a.host, etc. will be empty.)  We
-	     * work around that by performing the parsing in a 2nd step by taking a previously normalized
-	     * URL (e.g. by assigning to a.href) and assigning it a.href again.  This correctly populates the
-	     * properties such as protocol, hostname, port, etc.
-	     *
-	     * References:
-	     *   http://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement
-	     *   http://www.aptana.com/reference/html/api/HTMLAnchorElement.html
-	     *   http://url.spec.whatwg.org/#urlutils
-	     *   https://github.com/angular/angular.js/pull/2902
-	     *   http://james.padolsey.com/javascript/parsing-urls-with-the-dom/
-	     *
-	     * @kind function
-	     * @param {string} url The URL to be parsed.
-	     * @description Normalizes and parses a URL.
-	     * @returns {object} Returns the normalized URL as a dictionary.
-	     *
-	     *   | member name   | Description    |
-	     *   |---------------|----------------|
-	     *   | href          | A normalized version of the provided URL if it was not an absolute URL |
-	     *   | protocol      | The protocol including the trailing colon                              |
-	     *   | host          | The host and port (if the port is non-default) of the normalizedUrl    |
-	     *   | search        | The search params, minus the question mark                             |
-	     *   | hash          | The hash string, minus the hash symbol
-	     *   | hostname      | The hostname
-	     *   | port          | The port, without ":"
-	     *   | pathname      | The pathname, beginning with "/"
-	     *
-	     */
-	    function urlResolve(url) {
-	      var href = url;
-
-	      // Normalize before parse.  Refer Implementation Notes on why this is
-	      // done in two steps on IE.
-	      urlParsingNode.setAttribute("href", href);
-	      href = urlParsingNode.href;
-	      urlParsingNode.setAttribute('href', href);
-
-	      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-	      return {
-	        href: urlParsingNode.href,
-	        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-	        host: urlParsingNode.host,
-	        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-	        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-	        hostname: urlParsingNode.hostname,
-	        port: urlParsingNode.port,
-	        pathname: (urlParsingNode.pathname.charAt(0) === '/')
-	          ? urlParsingNode.pathname
-	          : '/' + urlParsingNode.pathname
-	      };
-	    }
-
-	    /**
-	     * Parse a request URL and determine whether this is a same-origin request as the application document.
-	     *
-	     * @param {string|object} requestUrl The url of the request as a string that will be resolved
-	     * or a parsed URL object.
-	     * @returns {boolean} Whether the request is for the same origin as the application document.
-	     */
-	    function urlIsSameOrigin(requestUrl) {
-	      var parsed = (angular.isString(requestUrl)) ? urlResolve(requestUrl) : requestUrl;
-	      return (parsed.protocol === originUrl.protocol &&
-	              parsed.host === originUrl.host);
-	    }
-
-	    return {
-	      urlResolve: urlResolve,
-	      isSameOrigin: urlIsSameOrigin
-	    };
-
-	  });
-
-	}());
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(19)(app);
+	  __webpack_require__(17)(app);
+	  __webpack_require__(18)(app);
 	};
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33376,23 +33009,61 @@
 	};
 
 /***/ },
-/* 20 */
+/* 18 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  app.factory('auth', ['$window', 'jwtHelper', '$location', function ($window, jwt, $location) {
+	    return {
+	      currentUser: {},
+	      getToken: function getToken(options) {
+	        options = options || {};
+	        if (this.token) return this.token;
+	        if ($window.localStorage.token) return this.setToken($window.localStorage.token);
+	        if (!options.noRedirect) $location.path('./signup');
+	      },
+	      setToken: function setToken(token) {
+	        $window.localStorage.token = token;
+	        this.token = token;
+	        this.getUser();
+	        return token;
+	      },
+	      getUser: function getUser() {
+	        var token = this.getToken();
+	        if (!token) return;
+	        var decoded = jwt.decodeToken(token);
+	        this.currentUser.username = decoded.username;
+	        return this.currentUser;
+	      },
+	      deleteToken: function deleteToken() {
+	        $window.localStore.token = '';
+	        this.token = '';
+	        $location.path('/home');
+	      }
+	    };
+	  }]);
+	};
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(21)(app);
-	  __webpack_require__(23)(app);
-	  __webpack_require__(25)(app);
+	  __webpack_require__(20)(app);
+	  __webpack_require__(22)(app);
+	  __webpack_require__(24)(app);
+	  __webpack_require__(28)(app);
 	  __webpack_require__(29)(app);
-	  __webpack_require__(31)(app);
-	  __webpack_require__(35)(app);
-	  __webpack_require__(39)(app);
+	  __webpack_require__(33)(app);
+	  __webpack_require__(37)(app);
 	};
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33400,7 +33071,7 @@
 	module.exports = function (app) {
 	  app.component('signUp', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(22),
+	    template: __webpack_require__(21),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33408,13 +33079,13 @@
 	};
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports) {
 
-	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\n  <div class=\"form-group\">\n    <label for=\"email\">Email </label>\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password </label>\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  </div>\n  <div>\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\n  </div>\n</form>\n";
+	module.exports = "<form name=\"signup\" ng-submit=\"$ctrl.signup($ctrl.user)\">\r\n  <div class=\"form-group\">\r\n    <label for=\"email\">Email </label>\r\n    <input class=\"form-control\" type=\"text\" required ng-model=\"$ctrl.user.basic.email\">\r\n  </div>\r\n  <div class=\"form-group\">\r\n    <label for=\"password\">Password </label>\r\n    <input class=\"form-control\" type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\r\n  </div>\r\n  <div>\r\n    <button type=\"submit\" class=\"btn btn-danger btn-block\">Sign Up</button>\r\n  </div>\r\n</form>\r\n";
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33422,7 +33093,7 @@
 	module.exports = function (app) {
 	  app.component('logIn', {
 	    controller: 'AuthController',
-	    template: __webpack_require__(24),
+	    template: __webpack_require__(23),
 	    bindings: {
 	      baseUrl: '<'
 	    }
@@ -33430,24 +33101,24 @@
 	};
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
-	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\n  <label for=\"email\">Email:</label>\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\n  <label for=\"password\">Password:</label>\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\n</form>\n";
+	module.exports = "<form name=\"login\" ng-submit=\"$ctrl.login($ctrl.user)\">\r\n  <label for=\"email\">Email:</label>\r\n  <input type=\"text\" required ng-model=\"ctrl.user.basic.email\">\r\n  <label for=\"password\">Password:</label>\r\n  <input type=\"password\" required ng-model=\"$ctrl.user.basic.password\">\r\n  <button type=\"submit\" class=\"btn btn-default\">Log In</button>\r\n</form>\r\n";
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
+	  __webpack_require__(25)(app);
 	  __webpack_require__(26)(app);
-	  __webpack_require__(27)(app);
 	};
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33523,7 +33194,7 @@
 	}
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33533,7 +33204,7 @@
 	    return {
 	      controller: 'ParkController',
 	      controllerAs: 'parkCtrl',
-	      template: __webpack_require__(28),
+	      template: __webpack_require__(27),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33544,10 +33215,20 @@
 	};
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\n  <h2>Find A Park</h2>\n  <label for=\"address\">Find A Park Near You:</label>\n  <input type=\"text\" name=\"address\">\n  <ul>\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\n  </ul>\n</div>\n";
+	module.exports = "<div class=\"form-inline\" novalidate ng-init=\"parkCtrl.getAllParks()\" ng-submit=\"map\">\r\n  <h2>Find A Park</h2>\r\n  <label for=\"address\">Find A Park Near You:</label>\r\n  <input type=\"text\" name=\"address\">\r\n  <ul>\r\n    <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.getSelectedParks(sport)\"> {{sport}}</button></li>\r\n  </ul>\r\n</div>\r\n";
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./map-directive\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()))(app);
+	};
 
 /***/ },
 /* 29 */
@@ -33557,84 +33238,11 @@
 
 	module.exports = function (app) {
 	  __webpack_require__(30)(app);
+	  __webpack_require__(31)(app);
 	};
 
 /***/ },
 /* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function (app) {
-	  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function ($rootScope, $http, lazyLoadApi) {
-	    return {
-	      restrict: 'CA', // restrict by class name
-	      scope: {
-	        mapId: '@id', // map ID
-	        lat: '@', // latitude
-	        long: '@' // longitude
-	      },
-	      link: function link(scope, element, attrs) {
-	        var location = null;
-	        var map = null;
-	        var mapOptions = null;
-
-	        // Check if latitude and longitude are specified
-	        if (angular.isDefined(scope.lat) && angular.isDefined(scope.long)) {
-	          // Loads google map script
-	          lazyLoadApi.then(initializeMap);
-	        }
-
-	        // Initialize the map
-	        function initializeMap() {
-	          var location = new google.maps.LatLng(scope.lat, scope.long);
-
-	          var mapOptions = {
-	            zoom: 12,
-	            center: location
-	          };
-
-	          var map = new google.maps.Map(element[0], mapOptions);
-
-	          $http.get(("http://localhost:3000") + '/api' + '/parks', {
-	            headers: {
-	              'Content-Type': 'appliction/json',
-	              'Accept': 'application/json'
-	            }
-	          }).then(function (res) {
-	            debugger;
-	            res.data.forEach(function (park) {
-	              new google.maps.Marker({
-	                position: new google.maps.LatLng(park.location.xpos, park.location.ypos),
-	                map: map
-	              });
-	            });
-	          });
-
-	          var marker2 = new google.maps.Marker({
-	            position: location,
-	            map: map,
-	            title: 'marker1'
-	          });
-	        }
-	      }
-	    };
-	  }]);
-	};
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function (app) {
-	  __webpack_require__(32)(app);
-	  __webpack_require__(33)(app);
-	};
-
-/***/ },
-/* 32 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33710,7 +33318,7 @@
 	};
 
 /***/ },
-/* 33 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33720,7 +33328,7 @@
 	    return {
 	      controller: 'CommentController',
 	      controllerAs: 'commentCtrl',
-	      template: __webpack_require__(34),
+	      template: __webpack_require__(32),
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
@@ -33733,24 +33341,24 @@
 	};
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
+	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\r\n  <p>{{commentCtrl.comments[0].username}}</p>\r\n  <p>{{commentCtrl.comments[0].text}}</p>\r\n  <p>{{commentCtrl.comments[0].date}}</p>\r\n  <p>\r\n    {{commentCtrl.comments[0].compRating}}\r\n  </p>\r\n  <p>\r\n    {{commentCtrl.comments[0].busyRating}}\r\n  </p>\r\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\r\n</div>\r\n";
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	module.exports = function (app) {
-	  __webpack_require__(36)(app);
-	  __webpack_require__(37)(app);
+	  __webpack_require__(34)(app);
+	  __webpack_require__(35)(app);
 	};
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33773,7 +33381,7 @@
 	};
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33783,7 +33391,7 @@
 	    return {
 	      controller: 'CommentFormController',
 	      controllerAs: 'cfCtrl',
-	      template: __webpack_require__(38),
+	      template: __webpack_require__(36),
 	      transclude: true,
 	      scope: {
 	        commentButtonText: '@',
@@ -33795,10 +33403,29 @@
 	};
 
 /***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\r\n  <div class=\"form-group\">\r\n    <label for=\"text\">Text:</label>\r\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\r\n  </div>\r\n  <select name=\"compRating\">\r\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\r\n  </select>\r\n  <select name=\"busyRating\">\r\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\r\n  </select>\r\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\r\n  <ng-transclude></ng-transclude>\r\n</form>\r\n";
+
+/***/ },
+/* 37 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	module.exports = function (app) {
+	  app.component('deleteToken', {
+	    controller: 'AuthController',
+	    template: __webpack_require__(38)
+	  });
+	};
+
+/***/ },
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\">{{rating}}</option>\n  </select>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
+	module.exports = "<h1>Temp Log Out Template</h1>\r\n\r\n<div ng-init=\"$ctrl.getUser()\">\r\n  <p ng-if=\"!$ctrl.currentUser.username\">Are you sure you want to sign out, {{ctrl.currentUser.username}}?</p>\r\n  <button class=\"btn btn-danger\" ng-click=\"$ctrl.deleteToken()\">Sign Out</button>\r\n</div>\r\n";
 
 /***/ },
 /* 39 */
@@ -33807,31 +33434,12 @@
 	'use strict';
 
 	module.exports = function (app) {
-	  app.component('deleteToken', {
-	    controller: 'AuthController',
-	    template: __webpack_require__(40)
-	  });
+	  __webpack_require__(40)(app);
+	  __webpack_require__(41)(app);
 	};
 
 /***/ },
 /* 40 */
-/***/ function(module, exports) {
-
-	module.exports = "<h1>Temp Log Out Template</h1>\n\n<div ng-init=\"$ctrl.getUser()\">\n  <p ng-if=\"!$ctrl.currentUser.username\">Are you sure you want to sign out, {{ctrl..currentUser.username}}?</p>\n  <button class=\"btn btn-danger\" ng-click=\"$ctrl.deleteToken()\">Sign Out</button>\n</div>\n";
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	module.exports = function (app) {
-	  __webpack_require__(42)(app);
-	  __webpack_require__(43)(app);
-	};
-
-/***/ },
-/* 42 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33873,7 +33481,7 @@
 	};
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33887,28 +33495,28 @@
 	};
 
 /***/ },
+/* 42 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"\">\r\n  <!-- <map-component></map-component> -->\r\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\r\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\r\n</div>\r\n";
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\r\n<sign-up base-url=\"baseUrl\"></sign-up>\r\n<delete-token></delete-token>\r\n";
+
+/***/ },
 /* 44 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"\">\n  <!-- <map-component></map-component> -->\n  <sm-map config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-map>\n  <sm-park config=\"httpConfig\" base-url=\"{{baseUrl}}\"></sm-park>\n</div>\n";
-
-/***/ },
-/* 45 */
-/***/ function(module, exports) {
-
-	module.exports = "<sign-in base-url=\"baseUrl\"></sign-in>\n<sign-up base-url=\"baseUrl\"></sign-up>\n<delete-token></delete-token>\n";
-
-/***/ },
-/* 46 */
 /***/ function(module, exports) {
 
 	module.exports = "";
 
 /***/ },
-/* 47 */
+/* 45 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-controller=\"MapController\">\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\n</div>\n";
+	module.exports = "<div ng-controller=\"MapController\">\r\n  <div id=\"mapParis\" class=\"google-map\" lat=\"47.6062\" long=\"-122.3321\"></div>\r\n</div>\r\n";
 
 /***/ }
 /******/ ]);
