@@ -7,4 +7,5 @@ module.exports = (app) => {
   require('./map')(app);
   require('./comment')(app);
   require('./comment-form')(app);
+  require('./delete-token')(app);
 };

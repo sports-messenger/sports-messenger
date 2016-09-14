@@ -4,7 +4,7 @@ require('!!file?name=[name].[ext]!./html/index.html');
 require('./scss/base.scss');
 
 const angular = require('angular');
-const projectApp = angular.module('projectApp', [require('angular-route')]);
+const projectApp = angular.module('projectApp', [require('angular-route'), require('angular-jwt')]);
 
 require('./services')(projectApp);
 require('./components')(projectApp);
@@ -29,7 +29,7 @@ projectApp.config(['$routeProvider', ($rp) => {
     template: require('./html/home.html')
   })
   .when('/parks/:id', {
-    template: require('./components/single-park/single-park-template.html')
+    template: require('./html/singlepark.html')
   })
   .when('/map', {
     template: require('./html/map.html')
