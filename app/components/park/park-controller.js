@@ -8,7 +8,7 @@ function ParkController($log, $http) {
   this.parks = [];
   this.selectedParks = [];
   this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
-
+  this.distances = [1, 5, 10, 20];
   this.getAllParks = function() {
     $log.debug('parkCtrl.getAllParks');
     $http.get(this.baseUrl + '/parks', this.config)
@@ -20,10 +20,13 @@ function ParkController($log, $http) {
   };
 
   this.getSelectedParks = function(sport) {
+    this.selectedParks = [];
     $log.debug('parkCtrl.getSelectedParks');
     $log.log('sport argument', sport);
-    this.selectedParks = this.parks.filter(function(park) {
-      if(park.sports[0] === sport) return true;
+    this.parks.forEach((park) => {
+      park.sports.forEach((index) => {
+        if(index === sport) this.selectedParks.push(park);
+      });
     });
     $log.log('this.parks', this.parks);
     $log.log('this.selectedParks', this.selectedParks);
