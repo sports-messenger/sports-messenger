@@ -22,9 +22,6 @@ projectApp.run(['$rootScope', ($rs) => {
 
 projectApp.config(['$routeProvider', ($rp) => {
   $rp
-  .when('/parks', {
-    template: require('./html/parks.html')
-  })
   .when('/home', {
     template: require('./html/home.html')
   })

@@ -16,6 +16,11 @@ module.exports = function(app) {
     this.selectedParks = [];
     this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
     this.distances = [1, 5, 10, 20];
+    let parkPath = '/parks/';
+    $scope.redirect = function(id) {
+      $location.path('/parks/'+ id);
+      $scope.$apply();
+    };
 
     $scope.$watch(function() {return parksMapCombine.getArray();}, (newArray, oldArray) => {
       if (newArray !== oldArray) {
@@ -63,8 +68,10 @@ module.exports = function(app) {
           });
 
           marker.addListener('click', () => {
-            $location.path(this.baseUrl +'/parks/' + park._id);
+            $scope.redirect(park._id);
           });
+
+
 
         });
       });
@@ -84,7 +91,7 @@ module.exports = function(app) {
         '<p id="firstHeading">Location: '+ park.name +'</p>'+
         '<p id="sportsParagraphs">Sports: '+ park.sports +'</p>'+
         '<p id="locationHours">Hours: '+ park.hours +'</p>'+
-        '<p id="parkUrl"><a href="#/parks/' + park._id +'">View Page</a></p>' +
+        '<p id="parkUrl">Click to View Page</p>' +
         '</div>'+
         '</div>';
 
@@ -99,7 +106,7 @@ module.exports = function(app) {
         });
 
         marker.addListener('click', () => {
-          $location.path(this.baseUrl + '/parks/' + park._id);
+          $scope.redirect(park._id);
         });
 
       });
