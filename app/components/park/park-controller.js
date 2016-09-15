@@ -5,6 +5,7 @@ module.exports = function(app) {
 };
 
 function ParkController($log, $http, parksMapCombine) {
+  this.hasAddress = false;
   this.addressString = null;
   this.addressPoint = null;
   this.parks = [];
@@ -22,7 +23,7 @@ function ParkController($log, $http, parksMapCombine) {
     });
   };
 
-  this.setNewAddress = function(next, distance) {
+  this.setNewAddress = function() {
     $log.debug('parkCtrl.setNewAddress');
     let formattedString = this.addressString.split(' ').join('+');
     $log.log('formattedString', formattedString);
@@ -32,7 +33,6 @@ function ParkController($log, $http, parksMapCombine) {
       $log.log('SetNewAddress AddressPoint', this.addressPoint);
       parksMapCombine.setAddressPoint(this.addressPoint);
     });
-    next(distance);
   };
 
   this.getRadian = function(num) {
