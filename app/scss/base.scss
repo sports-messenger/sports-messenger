@@ -8,6 +8,12 @@ h1 {
   font-size: 5px;
 }
 
+.header-style {
+  background-color: black;
+  margin: 0;
+  padding: 0;
+}
+
 .navbar-brand {
   float: left;
 }
@@ -20,6 +26,10 @@ h1 {
 .nav-links {
   display: block;
   padding: 20px;
+}
+
+.nav-links:hover {
+  background-color: darkred;
 }
 
 .google-map {

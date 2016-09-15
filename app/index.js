@@ -31,6 +31,12 @@ projectApp.config(['$routeProvider', ($rp) => {
   .when('/map', {
     template: require('./html/map.html')
   })
+  .when('/login', {
+    template: require('./html/log-in.html')
+  })
+  .when('/signout', {
+    template: require('./html/sign-out.html')
+  })
   .otherwise({
     redirectTo: 'home'
   });
