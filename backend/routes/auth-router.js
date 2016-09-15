@@ -17,13 +17,13 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
   newUser.username = req.body.username || req.body.basic.email;
   newUser.generateHash(req.body.basic.password)
     .then((tokenData) => {
-      newUser.save().then(() => {res.json(tokenData)}, ErrorHandler(400, next))
+      newUser.save().then(() => {res.json(tokenData);}, ErrorHandler(400, next));
     }, ErrorHandler(500, next, 'Server Error'));
 });
 
 authRouter.get('/login', BasicHTTP, (req, res, next) => {
   let authError = ErrorHandler(401, next, 'Authentication failed.');
-  User.findOne({'basic.email': req.auth.username})
+  User.findOne({'basic.email': req.auth.email})
     .then((user) => {
       if (!user) return authError(new Error('No Such User'));
       user.comparePassword(req.auth.password)
