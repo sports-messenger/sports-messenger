@@ -85,7 +85,6 @@ module.exports = (app) => {
             new google.maps.Marker({position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map});
           });
         }
-
       }
     };
   }]);
