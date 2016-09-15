@@ -6,6 +6,7 @@ module.exports = function(app) {
   function MapController($scope, $window, $http, $location, $log, parksMapCombine) {
     $scope.name = 'World';
     $scope.serviceArray = [];
+    let baseUrl = this.baseUrl;
     this.location = null;
     this.map = null;
     this.mapOptions = null;
@@ -63,7 +64,8 @@ module.exports = function(app) {
           });
 
           marker.addListener('click', () => {
-            $location.path(this.baseUrl +'/parks/' + park._id);
+            $log.log('clicked marker');
+            $location.path('http://localhost:8080/parks/' + park._id);
           });
 
         });
@@ -99,7 +101,8 @@ module.exports = function(app) {
         });
 
         marker.addListener('click', () => {
-          $location.path(this.baseUrl + '/parks/' + park._id);
+          $log.log('marker clicked');
+          $location.path('http://localhost:8080/parks/' + park._id);
         });
 
       });
