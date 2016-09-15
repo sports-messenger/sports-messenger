@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('MapController', ['$rootScope', '$window', '$http', '$location', '$log', 'parksMapCombine', MapController]);
+  app.controller('MapController', ['$rootScope', '$window', '$http', '$location', '$log', 'parksMapCombine', 'auth', MapController]);
 
-  function MapController($scope, $window, $http, $location, $log, parksMapCombine) {
+  function MapController($scope, $window, $http, $location, $log, parksMapCombine, auth) {
     $scope.name = 'World';
     $scope.serviceArray = [];
     this.location = null;
@@ -39,6 +39,7 @@ module.exports = function(app) {
     });
 
     this.initializeMap = function() {
+      auth.getUser();
       $log.debug('initializeMap');
       this.location = new google.maps.LatLng(this.lat, this.long);
       this.mapOptions = {zoom: 12, center: this.location, icon: this.image};
@@ -112,6 +113,5 @@ module.exports = function(app) {
       });
     };
 
-    // this.token = auth.getToken();
   }
 };
