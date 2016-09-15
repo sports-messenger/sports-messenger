@@ -12,9 +12,10 @@ let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   let newUser = new User();
-  newUser.basic.email = req.body.email;
-  newUser.username = req.body.username || req.body.email;
-  newUser.generateHash(req.body.password)
+  console.log(req.body);
+  newUser.basic.email = req.body.basic.email;
+  newUser.username = req.body.username || req.body.basic.email;
+  newUser.generateHash(req.body.basic.password)
     .then((tokenData) => {
       newUser.save().then(() => {res.json(tokenData)}, ErrorHandler(400, next))
     }, ErrorHandler(500, next, 'Server Error'));
