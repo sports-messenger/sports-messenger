@@ -57,7 +57,7 @@
 	__webpack_require__(49)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
-	  $rs.baseUrl = (undefined) + '/api';
+	  $rs.baseUrl = ("http:localhost:3000") + '/api';
 	  $rs.httpConfig = {
 	    headers: {
 	      'Content-Type': 'application/json',
@@ -34080,10 +34080,12 @@
 
 	      $log.debug('$ctrl.signup');
 
+	      debugger;
 	      $http.post(this.baseUrl + '/signup', user).then(function (res) {
 	        auth.setToken(res.data.token);
 	        $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
 	        $location.path('/map');
+	        debugger;
 	      }, function (err) {
 	        $log.error('error in $ctrl.signup', err);
 	        $location.path('/home');

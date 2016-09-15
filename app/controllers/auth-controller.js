@@ -7,13 +7,13 @@ module.exports = function(app) {
 
       $log.debug('$ctrl.signup');
 
-      $log.debug(this.baseUrl);
-
+      debugger;
       $http.post(this.baseUrl + '/signup', user)
       .then((res) => {
         auth.setToken(res.data.token);
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
         $location.path('/map');
+        debugger;
       }, (err) => {
         $log.error('error in $ctrl.signup', err);
         $location.path('/home');
