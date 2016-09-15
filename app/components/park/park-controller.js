@@ -28,7 +28,6 @@ function ParkController($log, $http, $scope, parksMapCombine) {
     $http.get(this.baseUrl + '/parks', this.config)
     .then((res) => {
       this.parks = res.data;
-      $log.log('example park', this.parks[20]);
     }, (err) => {
       $log.error('error in parkCtrl.getAllParks', err);
     });

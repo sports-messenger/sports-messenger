@@ -1,7 +1,9 @@
-<div>
-  <h2>{{park.name}}</h2>
-  <p>{{park.sports}}</p>
-  <p>{{park.hours}}</p>
+<div ng-init="spCtrl.getPark()">
+  <h2>{{spCtrl.park.name}}</h2>
+  <ul>
+    <li ng-repeat="sport in spCtrl.park.sports">{{sport}}</li>
+  </ul>
+  <p>{{spCtrl.park.hours}}</p>
   <ul>
     <li ng-repeat="comment in park.comments"><sm-comment park="{{park}}" comment="{{comment}}"></sm-comment></li>
   </ul>

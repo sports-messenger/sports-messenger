@@ -10,7 +10,8 @@ module.exports = (app) => {
       scope: {
         commentButtonText: '@',
         saveComment: '&',
-        comment: '='
+        comment: '=',
+        park: '@'
       }
     };
   });
