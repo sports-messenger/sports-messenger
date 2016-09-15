@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const ExtractText = require('extract-text-webpack-plugin');
 const PORT = process.env.PORT || 3000;
 
-const API_URL = JSON.stringify(process.env.API_URL || 'http:localhost:' + PORT);
+const API_URL = JSON.stringify(process.env.API_URL || 'https://localhost:' + PORT);
 
 var plugins = [
   new ExtractText('bundle.css'),
