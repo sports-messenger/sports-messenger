@@ -8,7 +8,7 @@ module.exports = function(app){
         options = options || {};
         if (this.token) return this.token;
         if ($window.localStorage.token) return this.setToken($window.localStorage.token);
-        if (!options.noRedirect) $location.path('./signup');
+        if (!options.noRedirect) $location.path('/home');
       },
       setToken: function(token){
         $window.localStorage.token = token;
