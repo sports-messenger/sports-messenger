@@ -18,13 +18,13 @@ module.exports = function(app){
       },
       getUser: function(){
         let token = this.getToken();
-        if (!token) return;
+        if (!token) $location.path('/home');
         let decoded = jwt.decodeToken(token);
         this.currentUser.username = decoded.username;
         return this.currentUser;
       },
       deleteToken: function(){
-        $window.localStore.token = '';
+        $window.localStorage.token = '';
         this.token = '';
         $location.path('/home');
       }
