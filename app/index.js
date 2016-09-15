@@ -11,7 +11,7 @@ require('./components')(projectApp);
 require('./controllers')(projectApp);
 
 projectApp.run(['$rootScope', ($rs) => {
-  $rs.baseUrl = `${__API_URL__}/api`;
+  $rs.baseUrl = `${__API_URL__}`;
   $rs.httpConfig = {
     headers: {
       'Content-Type': 'appliction/json',
