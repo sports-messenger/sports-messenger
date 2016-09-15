@@ -3,8 +3,9 @@
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractText = require('extract-text-webpack-plugin');
+const PORT = process.env.port || 3000;
 
-const apiURL = process.env.API_URL || 'https://localhost:3000';
+const apiURL = process.env.API_URL || PORT;
 
 var plugins = [
   new ExtractText('bundle.css'),
