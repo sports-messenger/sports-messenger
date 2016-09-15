@@ -57,7 +57,7 @@
 	__webpack_require__(49)(projectApp);
 
 	projectApp.run(['$rootScope', function ($rs) {
-	  $rs.baseUrl = (3000) + '/api';
+	  $rs.baseUrl = (undefined) + '/api';
 	  $rs.httpConfig = {
 	    headers: {
 	      'Content-Type': 'application/json',
