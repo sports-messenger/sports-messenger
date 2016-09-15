@@ -5,7 +5,7 @@
   </ul>
   <p>{{spCtrl.park.hours}}</p>
   <ul>
-    <li ng-repeat="comment in park.comments"><sm-comment park="{{park}}" comment="{{comment}}"></sm-comment></li>
+    <li ng-repeat="comment in spCtrl.park.comments"><sm-comment park="{{spCtrl.park}}" comment="{{comment}}"></sm-comment></li>
   </ul>
-  <sm-comment-form comment-button-text="Add Comment" save-comment="commentCtrl.createComment(comment)"></sm-comment-form>
+  <sm-comment-form comment-button-text="Add Comment" save-comment="spCtrl.createComment(comment)" park-id="spCtrl.park._id"></sm-comment-form>
 </div>

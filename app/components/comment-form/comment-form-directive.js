@@ -11,7 +11,7 @@ module.exports = (app) => {
         commentButtonText: '@',
         saveComment: '&',
         comment: '=',
-        park: '@'
+        parkId: '='
       }
     };
   });
