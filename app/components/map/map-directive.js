@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = (app) => {
-  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function($rootScope, $http, lazyLoadApi) {
+  app.directive('googleMap', ['$rootScope', '$http', 'lazyLoadApi', function($rootScope, $http, lazyLoadApi, parkMapCombine) {
     return {
-      restrict: 'CA', 
+      restrict: 'CA',
       scope: {
         mapId: '@id',
         lat: '@',
@@ -13,6 +13,8 @@ module.exports = (app) => {
         var location = null;
         var map = null;
         var mapOptions = null;
+        var mapPoints = [];
+
 
         if (angular.isDefined(scope.lat) && angular.isDefined(scope.long)) {
           lazyLoadApi.then( initializeMap );
@@ -36,9 +38,9 @@ module.exports = (app) => {
               'Accept': 'application/json'
             }
           }).then(function(res){
-            console.log(res.data);
-            res.data.forEach(function(park) {
-              var marker = new google.maps.Marker({
+            mapPoints = res.data;
+            mapPoints.forEach(function(park) {
+              new google.maps.Marker({
                 position: new google.maps.LatLng(park.location.ypos, park.location.xpos),
                 map: map,
                 icon: image,
@@ -73,6 +75,17 @@ module.exports = (app) => {
             icon: image,
           });
         }
+        function setNewMap() {
+          let newLocation = parkMapCombine.getAddressPoint();
+          location = new google.maps.LatLng(newLocation.lat, newLocation.lng);
+          mapOptions = {zoom: 12, center: location};
+          map = new google.maps.Map([element[0], mapOptions]);
+          mapPoints = parkMapCombine.getArray();
+          mapPoints.forEach(function(park) {
+            new google.maps.Marker({position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map});
+          });
+        }
+
       }
     };
   }]);
