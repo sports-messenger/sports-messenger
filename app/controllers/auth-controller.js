@@ -7,7 +7,8 @@ module.exports = function(app) {
 
       $log.debug('$ctrl.signup');
 
-      console.log(this.baseUrl);
+      $log.debug(this.baseUrl);
+
       $http.post(this.baseUrl + '/signup', user)
       .then((res) => {
         auth.setToken(res.data.token);
