@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="projectApp">
+  <head>
+    <title>Sports Messenger</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <script src="bundle.js"></script>
+    <link rel="stylesheet" href="bundle.css">
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  </head>
+  <body>
+    <header class="header-style">
+      <nav>
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#/">Sports Messenger</a>
+          </div>
+          <ul>
+            <li class="nav-list"><a class="nav-links" href="#/signout">Sign Out</a></li>
+            <li class="nav-list"><a class="nav-links" href="#/login">Sign In</a></li>
+            <li class="nav-list"><a class="nav-links" href="#/map">Map</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main ng-view></main>
+
+  </body>
+</html>
