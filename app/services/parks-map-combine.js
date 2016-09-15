@@ -1,25 +1,27 @@
 'use strict';
 
-module.exports = (app) => {
+module.exports = function(app) {
   app.factory('parksMapCombine', function() {
+    let data = {
+      addressPoint: {},
+      serviceArray: []
+    };
     return {
-      serviceArray: [],
-      addressPoint: null,
       setArray: function(array) {
-        this.serviceArray = array;
+        data.serviceArray = array;
       },
       setAddressPoint: function(address) {
-        this.addressPoint = address;
+        data.addressPoint = address;
       },
       setBothValues: function(array, address) {
-        this.serviceArray = array;
-        this.addressPoint = address;
+        data.serviceArray = array;
+        data.addressPoint = address;
       },
       getArray: function() {
-        return this.serviceArray;
+        return data.serviceArray;
       },
       getAddressPoint: function() {
-        return this.addressPoint;
+        return data.addressPoint;
       }
     };
   });
