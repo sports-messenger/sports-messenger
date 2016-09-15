@@ -24,6 +24,7 @@ mongoose.Promise = Promise;
 mongoose.connect(mongoDbUri);
 
 app.use(express.static(`${__dirname}/build`));
+require('./backend/lib/park-data')();
 
 app.use(morgan('dev'));
 app.use(cors());
