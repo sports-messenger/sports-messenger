@@ -3,11 +3,17 @@
     <label for="text">Text:</label>
     <input name="text" class="form-control" ng-model="cfCtrl.comment.text">
   </div>
+  <p>
+    How Competitive Was it?
+  </p>
   <select name="compRating">
-    <option ng-repeat="rating cfCtrl.ratings" ng-model="cfCtrl.comment.compRating">{{rating}}</option>
+    <option ng-repeat="rating in cfCtrl.ratings" ng-model="cfCtrl.comment.compRating" value="rating">{{rating}}</option>
   </select>
+  <p>
+    How Busy Was it?
+  </p>
   <select name="busyRating">
-    <option ng-repeat="rating cfCtrl.ratings" ng-model="cfCtrl.comment.busyRating">{{rating}}</option>
+    <option ng-repeat="rating in cfCtrl.ratings" ng-model="cfCtrl.comment.busyRating">{{rating}}</option>
   </select>
   <button type="submit" class="btn btn-default">{{cfCtrl.commentButtonText}}</button>
   <ng-transclude></ng-transclude>

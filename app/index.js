@@ -14,7 +14,7 @@ projectApp.run(['$rootScope', ($rs) => {
   $rs.baseUrl = `${__API_URL__}`;
   $rs.httpConfig = {
     headers: {
-      'Content-Type': 'appliction/json',
+      'Content-Type': 'application/json',
       'Accept': 'application/json'
     }
   };
@@ -22,9 +22,6 @@ projectApp.run(['$rootScope', ($rs) => {
 
 projectApp.config(['$routeProvider', ($rp) => {
   $rp
-  .when('/parks', {
-    template: require('./html/parks.html')
-  })
   .when('/home', {
     template: require('./html/home.html')
   })
@@ -33,7 +30,6 @@ projectApp.config(['$routeProvider', ($rp) => {
   })
   .when('/map', {
     template: require('./html/map.html')
-    // controller: 'MapController'
   })
   .otherwise({
     redirectTo: 'home'

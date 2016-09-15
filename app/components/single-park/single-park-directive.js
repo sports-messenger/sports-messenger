@@ -8,8 +8,9 @@ module.exports = (app) => {
       template: require('./single-park-template.html'),
       bindToController: true,
       scope: {
-        park: '@',
-        baseUrl: '='
+        baseUrl: '@',
+        config: '=',
+        park: '@'
       }
     };
   });
