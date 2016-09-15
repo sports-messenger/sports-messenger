@@ -22,9 +22,9 @@ function ParkController($log, $http, parksMapCombine) {
     });
   };
 
-  this.setNewAddress = function(inputString) {
+  this.setNewAddress = function(next, distance) {
     $log.debug('parkCtrl.setNewAddress');
-    let formattedString = inputString.split(' ').join('+');
+    let formattedString = this.addressString.split(' ').join('+');
     $log.log('formattedString', formattedString);
     $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + formattedString + '&key=AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw').then((res) => {
       $log.log('result from get call to google maps', res);
@@ -32,6 +32,7 @@ function ParkController($log, $http, parksMapCombine) {
       $log.log('SetNewAddress AddressPoint', this.addressPoint);
       parksMapCombine.setAddressPoint(this.addressPoint);
     });
+    next(distance);
   };
 
   this.getRadian = function(num) {
@@ -39,7 +40,7 @@ function ParkController($log, $http, parksMapCombine) {
   };
 
   this.getDistance = function(address, park) {
-    let radius = 6378137;
+    let radius = 3959;
     let dLat = this.getRadian(park.location.ypos - address.lat);
     let dLon = this.getRadian(park.location.xpos - address.lng);
     let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -63,14 +64,11 @@ function ParkController($log, $http, parksMapCombine) {
 
   this.setNearbyParks = function(distance) {
     $log.log('distance in setNearbyParks', distance);
-    this.setNewAddress(this.addressString);
     this.selectedParks = [];
     $log.debug('parkCtrl.setNearbyParks');
     $log.log('addressPoint', this.addressPoint);
     this.parks.forEach((park) => {
       let parkDistance = this.getDistance(this.addressPoint, park);
-      $log.log('park location', park.location);
-      $log.log('this.addressPoint', this.addressPoint);
       $log.log('distance from park to location', parkDistance);
       if(distance >= parkDistance) {
         this.selectedParks.push(park);

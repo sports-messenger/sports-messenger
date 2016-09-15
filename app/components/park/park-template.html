@@ -5,7 +5,7 @@
     <input type="text" name="address" ng-model="parkCtrl.addressString">
     <p>How Far Away?</p>
     <ul>
-      <li ng-repeat="distance in parkCtrl.distances"><button type="button" ng-click="parkCtrl.setNearbyParks(distance)">{{distance}} miles from current location</button></li>
+      <li ng-repeat="distance in parkCtrl.distances"><button type="button" ng-click="parkCtrl.setNewAddress(parkCtrl.setNearbyParks, distance)">{{distance}} miles from current location</button></li>
     </ul>
   </div>
   <p>Choose A Sport:</p>
