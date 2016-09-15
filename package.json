@@ -2,14 +2,14 @@
   "name": "sports-messenger",
   "version": "1.0.0",
   "description": "Final Project for Codefellows 401-d8",
-  "main": "server.js",
+  "main": "index.js",
   "engines": {
     "node": "4.4.7"
   },
   "scripts": {
     "watch": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
