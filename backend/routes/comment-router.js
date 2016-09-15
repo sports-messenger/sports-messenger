@@ -10,6 +10,13 @@ const jwtAuth = require('../lib/jwt-auth');
 
 let commentRouter = module.exports = exports = new Router();
 
+commentRouter.get('/comments/park/:id', function(req, res, next){
+  debug('GET from /api');
+  Comment.find({parkId: req.params.id})
+    .then( comments => res.send(comments))
+    .catch( err => next(createError(404, err.message)));
+});
+
 commentRouter.post('/comments', jsonParser, jwtAuth, function(req, res, next){
   debug('POST REQUEST from /api/comment');
   if (!req.body.parkId)

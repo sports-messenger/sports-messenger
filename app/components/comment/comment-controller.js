@@ -16,9 +16,9 @@ module.exports = function(app) {
         });
     };
 
-    this.getSingleComment = function(commentId) {
+    this.getSingleComment = function(comment) {
       $log.debug('commentCtrl.getSingleComment');
-      $http.get(this.baseUrl + '/comments/' + commentId, this.config)
+      $http.get(this.baseUrl + '/comments/' + comment._id, this.config)
         .then((res) => {
           $log.log('commentCtrl.getSingleComment res.data', res.data);
           this.comments = res.data;
