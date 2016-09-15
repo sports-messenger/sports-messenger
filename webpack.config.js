@@ -3,7 +3,7 @@
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractText = require('extract-text-webpack-plugin');
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 const apiURL = process.env.API_URL || PORT;
 
