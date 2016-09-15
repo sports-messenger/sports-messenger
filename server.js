@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000;
 const mongoDbUri = process.env.MONGODB_URI || 'mongodb://localhost/home';
 process.env.APP_SECRET = 'secret';
 
-// require('./backend/lib/park-data')();
+require('./backend/lib/park-data')();
 
 mongoose.Promise = Promise;
 mongoose.connect(mongoDbUri);
@@ -32,7 +32,7 @@ app.use('/api', authRouter);
 app.use('/api', commentRouter);
 app.use('/api/parks', parkRouter);
 
-app.get('/api/parks/test', (req, res) => {});
+// app.get('/api/parks/test', (req, res) => {});
 
 app.all('*', function(req, res, next){
   debug('Got error: 404');
