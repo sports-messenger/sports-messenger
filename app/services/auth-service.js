@@ -18,7 +18,7 @@ module.exports = function(app){
       },
       getUser: function(){
         let token = this.getToken();
-        if (!token) $location.path('/home');
+        if (!token)  return $location.path('/home');
         let decoded = jwt.decodeToken(token);
         this.currentUser.username = decoded.username;
         return this.currentUser;
