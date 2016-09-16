@@ -12,7 +12,6 @@ function SingleParkController($log, $http, $location){
     $log.debug('spCtrl.getPark');
     $http.get(this.baseUrl + this.pathId, this.config)
     .then((res) => {
-      $log.log('res.data', res.data);
       this.park = res.data;
     }, (err) => {
       $log.error('error in spCtrl.getPark', err);

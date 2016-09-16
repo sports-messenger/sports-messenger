@@ -25,7 +25,6 @@ module.exports = function(app) {
         $log.debug('$scope.$watch getArray');
         $scope.serviceArray = newArray;
         this.mapPoints = $scope.serviceArray;
-        $log.log('mapCtrl.mapPoints', this.mapPoints);
         this.setNewMap();
       }
     });
@@ -35,7 +34,6 @@ module.exports = function(app) {
         $log.debug('$scope.$watch getAddressPoint');
         $scope.addressPoint = newPoint;
         this.addressPoint = $scope.addressPoint;
-        $log.log('mapCtrl.addressPoint', this.addressPoint);
         this.setNewMap();
       }
     });

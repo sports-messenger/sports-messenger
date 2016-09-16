@@ -8,7 +8,6 @@ module.exports = function(app) {
     this.saveCommentAndNull = () => {
       $log.debug('cfCtrl.saveCommentAndNull');
       this.saveComment({comment: this.comment});
-      $log.log('cfCtrl.comment', this.comment);
       if(!$scope.comment) this.comment = null;
     };
   }]);

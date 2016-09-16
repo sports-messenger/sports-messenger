@@ -72,7 +72,6 @@ function ParkController($log, $http, $scope, parksMapCombine) {
         if(index === sport) this.selectedParks.push(park);
       });
     });
-    $log.log('parkCtrl.selectedParks', this.selectedParks);
     parksMapCombine.setArray(this.selectedParks);
   };
 
