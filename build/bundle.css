@@ -7546,13 +7546,19 @@ optgroup {
 textarea {
   overflow: auto; }
 
+* {
+  font-family: Arial; }
+
 h1 {
-  font-size: 5px; }
+  font-size: 1vw; }
 
 .header-style {
   background-color: black;
   margin: 0;
   padding: 0; }
+
+.header-link {
+  font-size: 10px; }
 
 .navbar-brand {
   float: left; }
@@ -7566,9 +7572,91 @@ h1 {
   padding: 20px; }
 
 .nav-links:hover {
-  background-color: darkred; }
+  background-color: white; }
 
 .google-map {
-  width: 1000px;
-  height: 500px;
+  display: inline-block;
+  width: 70%;
+  height: 45vw;
   margin: 0 auto; }
+
+sm-park {
+  width: 28%;
+  display: inline-block;
+  height: 45vw;
+  vertical-align: top;
+  text-align: center; }
+
+.distanceButton {
+  width: 70%; }
+
+.sportButton {
+  width: 60%; }
+
+.buttonContainer {
+  list-style: none;
+  margin-bottom: 5px; }
+
+.addressInput {
+  margin-bottom: 10px; }
+
+.commentContainer {
+  border: solid thin black;
+  border-radius: 5px;
+  width: 95%;
+  margin: 0 auto;
+  list-style: none;
+  padding: 20px;
+  background-color: black;
+  color: white; }
+
+.form-group {
+  text-align: center; }
+
+form {
+  margin-bottom: 10px; }
+
+li {
+  list-style: none; }
+
+.comments-box {
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  padding-bottom: 10px; }
+
+.comment-image {
+  height: 300px;
+  width: 500px; }
+
+.div_park {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  margin-top: 30px;
+  margin-bottom: 30px; }
+
+.div_park_name {
+  margin-top: 40px; }
+
+.form-inline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+
+#form_fuck {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column; }
+
+#txt-input {
+  width: 900px; }

@@ -33427,6 +33427,11 @@
 	        if ($window.localStorage.token) return this.setToken($window.localStorage.token);
 	        if (!options.noRedirect) $location.path('/home');
 	      },
+	      setUser: function setUser(user) {
+	        $window.localStorage.username = user.basic.email;
+	        this.username = user.basic.email;
+	        return user.basic.email;
+	      },
 	      setToken: function setToken(token) {
 	        $window.localStorage.token = token;
 	        this.token = token;
@@ -33442,6 +33447,7 @@
 	      },
 	      deleteToken: function deleteToken() {
 	        $window.localStorage.token = '';
+	        $window.localStorage.username = '';
 	        this.token = '';
 	        $location.path('/home');
 	      }
@@ -33561,6 +33567,11 @@
 	    });
 	  };
 
+	  this.changeAddressButton = function () {
+	    this.addressString = null;
+	    this.hasAddress = false;
+	  };
+
 	  this.setNewAddress = function () {
 	    var _this2 = this;
 
@@ -33569,6 +33580,7 @@
 	    $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + formattedString + '&key=AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw').then(function (res) {
 	      _this2.addressPoint = { lat: res.data.results[0].geometry.location.lat, lng: res.data.results[0].geometry.location.lng };
 	      parksMapCombine.setAddressPoint(_this2.addressPoint);
+	      _this2.addressString = null;
 	    });
 	  };
 
@@ -33639,7 +33651,7 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"parkCtrl.getAllParks()\">\n  <h2>Find A Park</h2>\n  <div>\n    <form class=\"form-inline\" novalidate ng-submit=\"parkCtrl.setNewAddress()\">\n      <label for=\"address\">Enter Your Address to Find A Park Near You:</label>\n      <input type=\"text\" name=\"address\" ng-model=\"parkCtrl.addressString\">\n      <button type=\"submit\" ng-show=\"!parkCtrl.hasAddress\" ng-click=\"parkCtrl.hasAddress=true\">Enter Address</button>\n      <button ng-if=\"parkCtrl.hasAddress\" ng-click=\"parkCtrl.hasAddress=false\">Change Address</button>\n    </form>\n    <div ng-if=\"parkCtrl.hasAddress\">\n      <p>How Far Away?</p>\n      <ul>\n        <li ng-repeat=\"distance in parkCtrl.distances\"><button type=\"button\" ng-click=\"parkCtrl.setNearbyParks(distance)\">{{distance}} miles from current location</button></li>\n      </ul>\n      <p>Choose A Sport:</p>\n      <ul>\n        <li ng-repeat=\"sport in parkCtrl.sports\"><button type=\"button\" ng-click=\"parkCtrl.setSelectedParks(sport)\"> {{sport}}</button></li>\n      </ul>\n    </div>\n  </div>\n</div>\n";
+	module.exports = "<div ng-init=\"parkCtrl.getAllParks()\">\n  <h2>Find A Park</h2>\n  <div>\n    <form id=\"form_fuck\" class=\"form-inline\" class=\"container\" novalidate ng-submit=\"parkCtrl.setNewAddress()\">\n\n      <div class=\"form-group\">\n        <label for=\"address\">Enter Your Address to Find A Park Near You:</label>\n        <input type=\"text\" class=\"form-control addressInput\" name=\"address\" ng-model=\"parkCtrl.addressString\">\n      </div>\n\n      <div>\n        <button type=\"submit\" ng-show=\"!parkCtrl.hasAddress\" ng-click=\"parkCtrl.hasAddress=true\" class=\"btn btn-primary buttonContainer\">Enter Address</button>\n        <button ng-show=\"parkCtrl.hasAddress\" ng-click=\"parkCtrl.changeAddressButton()\" class=\"btn btn-primary buttonContainer\">Change Address</button>\n      </div>\n    </form>\n    <div ng-if=\"parkCtrl.hasAddress\">\n      <p>How Far Away?</p>\n\n        <li ng-repeat=\"distance in parkCtrl.distances\" class=\"buttonContainer\"><button type=\"button\" ng-click=\"parkCtrl.setNearbyParks(distance)\" class=\"btn btn-primary distanceButton\">{{distance}} miles from current location</button></li>\n\n      <p>Choose A Sport:</p>\n\n        <li ng-repeat=\"sport in parkCtrl.sports\" class=\"buttonContainer\"><button type=\"button\" ng-click=\"parkCtrl.setSelectedParks(sport)\" class=\"btn btn-primary sportButton\"> {{sport}}</button></li>\n\n    </div>\n  </div>\n</div>\n";
 
 /***/ },
 /* 31 */
@@ -33673,10 +33685,8 @@
 	    this.mapPoints = [];
 	    this.image = 'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1oXOM.img';
 	    this.addressPoint = null;
-	    this.selectedParks = [];
 	    this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
 	    this.distances = [1, 5, 10, 20];
-	    var parkPath = '/parks/';
 	    $scope.redirect = function (id) {
 	      $location.path('/parks/' + id);
 	      $scope.$apply();
@@ -33686,6 +33696,7 @@
 	      return parksMapCombine.getArray();
 	    }, function (newArray, oldArray) {
 	      if (newArray !== oldArray) {
+	        $log.debug('$scope.$watch getArray');
 	        $scope.serviceArray = newArray;
 	        _this.mapPoints = $scope.serviceArray;
 	        _this.setNewMap();
@@ -33696,6 +33707,7 @@
 	      return parksMapCombine.getAddressPoint();
 	    }, function (newPoint, oldPoint) {
 	      if (newPoint !== oldPoint) {
+	        $log.debug('$scope.$watch getAddressPoint');
 	        $scope.addressPoint = newPoint;
 	        _this.addressPoint = $scope.addressPoint;
 	        _this.setNewMap();
@@ -33705,8 +33717,8 @@
 	    this.initializeMap = function () {
 	      var _this2 = this;
 
-	      auth.getUser();
 	      $log.debug('initializeMap');
+	      auth.getUser();
 	      this.location = new google.maps.LatLng(this.lat, this.long);
 	      this.mapOptions = { zoom: 12, center: this.location, icon: this.image };
 	      this.map = new google.maps.Map(this.mapElement, this.mapOptions);
@@ -33735,30 +33747,37 @@
 	    };
 
 	    this.setNewMap = function () {
-	      var newLocation = this.addressPoint;
-	      this.location = new google.maps.LatLng(newLocation.lat, newLocation.lng);
-	      this.mapOptions = { zoom: 12, center: this.location, icon: this.image };
-	      var map = new google.maps.Map(this.mapElement, this.mapOptions);
-	      var image = 'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1oXOM.img';
-	      this.mapPoints.forEach(function (park) {
-	        var marker = new google.maps.Marker({ position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map, icon: image, title: park.name });
+	      var _this3 = this;
 
-	        var contentString = '<div id="content">' + '<div id="siteNotice">' + '<p id="firstHeading">Location: ' + park.name + '</p>' + '<p id="sportsParagraphs">Sports: ' + park.sports + '</p>' + '<p id="locationHours">Hours: ' + park.hours + '</p>' + '<p id="parkUrl">Click to View Page</p>' + '</div>' + '</div>';
+	      $log.debug('mapCtrl.setNewMap');
+	      if (this.addressPoint !== null) {
+	        (function () {
+	          var newLocation = _this3.addressPoint;
+	          _this3.location = new google.maps.LatLng(newLocation.lat, newLocation.lng);
+	          _this3.mapOptions = { zoom: 12, center: _this3.location, icon: _this3.image };
+	          var map = new google.maps.Map(_this3.mapElement, _this3.mapOptions);
+	          var image = 'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1oXOM.img';
+	          _this3.mapPoints.forEach(function (park) {
+	            var marker = new google.maps.Marker({ position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map, icon: image, title: park.name });
 
-	        var infoWindow = new google.maps.InfoWindow({ content: contentString });
+	            var contentString = '<div id="content">' + '<div id="siteNotice">' + '<p id="firstHeading">Location: ' + park.name + '</p>' + '<p id="sportsParagraphs">Sports: ' + park.sports + '</p>' + '<p id="locationHours">Hours: ' + park.hours + '</p>' + '<p id="parkUrl">Click to View Page</p>' + '</div>' + '</div>';
 
-	        marker.addListener('mouseover', function () {
-	          infoWindow.open(map, marker);
-	        });
+	            var infoWindow = new google.maps.InfoWindow({ content: contentString });
 
-	        marker.addListener('mouseout', function () {
-	          infoWindow.close();
-	        });
+	            marker.addListener('mouseover', function () {
+	              infoWindow.open(map, marker);
+	            });
 
-	        marker.addListener('click', function () {
-	          $scope.redirect(park._id);
-	        });
-	      });
+	            marker.addListener('mouseout', function () {
+	              infoWindow.close();
+	            });
+
+	            marker.addListener('click', function () {
+	              $scope.redirect(park._id);
+	            });
+	          });
+	        })();
+	      }
 	    };
 	  }
 	};
@@ -33846,8 +33865,7 @@
 	      bindToController: true,
 	      scope: {
 	        baseUrl: '@',
-	        config: '=',
-	        park: '@'
+	        config: '='
 	      }
 	    };
 	  });
@@ -33857,7 +33875,7 @@
 /* 38 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"spCtrl.getPark()\">\n  <h2>{{spCtrl.park.name}}</h2>\n  <ul>\n    <li ng-repeat=\"sport in spCtrl.park.sports\">{{sport}}</li>\n  </ul>\n  <p>{{spCtrl.park.hours}}</p>\n  <ul>\n    <li ng-repeat=\"comment in park.comments\"><sm-comment park=\"{{park}}\" comment=\"{{comment}}\"></sm-comment></li>\n  </ul>\n  <sm-comment-form comment-button-text=\"Add Comment\" save-comment=\"commentCtrl.createComment(comment)\"></sm-comment-form>\n</div>\n";
+	module.exports = "<div ng-init=\"spCtrl.getPark()\">\n  <div class=\"div_park\">\n    <div class=\"div_park_name\">\n      <h2>{{spCtrl.park.name}}</h2>\n      <ul>\n        <li ng-repeat=\"sport in spCtrl.park.sports\">{{sport}}</li>\n        <li>{{spCtrl.park.hours}}</li>\n      </ul>\n    </div>\n    <img src=\"http://www.thesportstruth.com/wp-content/uploads/2015/11/sports.jpg\" class=\"comment-image\" alt=\"balls\" />\n  </div>\n  <div>\n    <ul>\n      <sm-comment park=\"spCtrl.park\" config=\"httpConfig\" base-url=\"{{spCtrl.baseUrl}}\"></sm-comment>\n    </ul>\n  </div>\n</div>\n";
 
 /***/ },
 /* 39 */
@@ -33877,68 +33895,47 @@
 	'use strict';
 
 	module.exports = function (app) {
-	  app.controller('CommentController', ['$log', '$http', '$scope', CommentController]);
+	  app.controller('CommentController', ['$log', '$http', '$window', 'auth', CommentController]);
 
-	  function CommentController($log, $http) {
+	  function CommentController($log, $http, $window, auth) {
 	    this.comments = [];
+	    this.authConfig = { headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + $window.localStorage.token } };
 	    this.getAllComments = function () {
 	      var _this = this;
 
+	      auth.getUser();
 	      $log.debug('commentCtrl.getAllComments');
 	      $http.get(this.baseUrl + '/comments', this.config).then(function (res) {
-	        $log.log('commentCtrl.getAllComments res.data', res.data);
-	        _this.comments = res.data;
+	        _this.comments = res.data.filter(function (comment) {
+	          if (comment.parkId === _this.park._id) {
+	            return comment;
+	          }
+	        });
 	      }, function (err) {
 	        $log.error('error in commentCtrl.getAllComments', err);
-	      });
-	    };
-
-	    this.getSingleComment = function (commentId) {
-	      var _this2 = this;
-
-	      $log.debug('commentCtrl.getSingleComment');
-	      $http.get(this.baseUrl + '/comments/' + commentId, this.config).then(function (res) {
-	        $log.log('commentCtrl.getSingleComment res.data', res.data);
-	        _this2.comments = res.data;
-	        _this2.getUsername(_this2.comments[0]);
-	      }, function (err) {
-	        $log.error('error in commentCtrl.getAllComments', err);
-	      });
-	    };
-
-	    this.getUsername = function (comment) {
-	      var _this3 = this;
-
-	      $log.debug('commentCtrl.getUsername');
-	      $http.get(this.baseUrl + '/users/' + comment.userId).then(function (res) {
-	        $log.log('commentCtrl.getUsername res.data', res.data);
-	        _this3.comment.username = res.data.name;
-	      }, function (err) {
-	        $log.error('error in commentCtrl.getUsername', err);
 	      });
 	    };
 
 	    this.deleteComment = function (comment) {
-	      var _this4 = this;
+	      var _this2 = this;
 
 	      $log.debug('commentCtrl.deleteComment');
 	      $http.delete(this.baseUrl + '/comments/' + comment._id, this.config).then(function (res) {
-	        _this4.comments.splice(_this4.comments.indexOf(comment), 1);
-	        $log.log('commentCtrl.deleteComment res', res);
+	        _this2.comments.splice(_this2.comments.indexOf(comment), 1);
 	      }, function (err) {
 	        $log.error('error in commentCtrl.deleteComment', err);
 	      });
 	    };
 
 	    this.createComment = function (comment) {
-	      var _this5 = this;
+	      var _this3 = this;
 
+	      $log.log('token in createComment', this.authConfig);
 	      $log.debug('commentCtrl.createComment');
 	      comment.parkId = this.park._id;
-	      $http.post(this.baseUrl + '/comments', comment, this.config).then(function (res) {
-	        $log.log('successfully created comment', res.data);
-	        _this5.comments.push(res.data);
-	        _this5.park.comments.push(res.data);
+	      comment.username = $window.localStorage.username;
+	      $http.post(this.baseUrl + '/comments', comment, this.authConfig).then(function (res) {
+	        _this3.comments.push(res.data);
 	      }).catch(function (err) {
 	        $log.error('error in commentCtrl.createComment', err);
 	      });
@@ -33962,8 +33959,7 @@
 	      scope: {
 	        baseUrl: '@',
 	        config: '=',
-	        park: '=',
-	        comment: '='
+	        park: '='
 	      }
 	    };
 	  });
@@ -33973,7 +33969,7 @@
 /* 42 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-init=\"commentCtrl.getSingleComment(commentCtrl.comment)\">\n  <p>{{commentCtrl.comments[0].username}}</p>\n  <p>{{commentCtrl.comments[0].text}}</p>\n  <p>{{commentCtrl.comments[0].date}}</p>\n  <p>\n    {{commentCtrl.comments[0].compRating}}\n  </p>\n  <p>\n    {{commentCtrl.comments[0].busyRating}}\n  </p>\n  <button type=\"button\" ng-click=\"commentCtrl.deleteComment(commentCtrl.comments[0])\">Delete Comment</button>\n</div>\n";
+	module.exports = "<div ng-init=\"commentCtrl.getAllComments()\">\n  <sm-comment-form comment-button-text=\"Add Comment\" save-comment=\"commentCtrl.createComment(comment)\"></sm-comment-form>\n  <ul class=\"commentContainer\">\n    <li ng-repeat=\"comment in commentCtrl.comments\" class=\"singleContainer\">\n      <h5>{{comment.username}}</h5>\n      <p>{{comment.text}}</p>\n      <button class=\"btn btn-default\" ng-click=\"commentCtrl.deleteComment(comment)\">Delete Comment</button>\n    </li>\n  </ul>\n</div>\n";
 
 /***/ },
 /* 43 */
@@ -33996,14 +33992,12 @@
 	  app.controller('CommentFormController', ['$scope', '$log', function ($scope, $log) {
 	    var _this = this;
 
-	    this.ratings = [1, 2, 3, 4, 5];
 	    this.comment = $scope.comment || {};
 	    this.commentButtonText = $scope.commentButtonText;
 	    this.saveComment = $scope.saveComment;
 	    this.saveCommentAndNull = function () {
 	      $log.debug('cfCtrl.saveCommentAndNull');
 	      _this.saveComment({ comment: _this.comment });
-	      $log.log('cfCtrl.comment', _this.comment);
 	      if (!$scope.comment) _this.comment = null;
 	    };
 	  }]);
@@ -34025,8 +34019,7 @@
 	      scope: {
 	        commentButtonText: '@',
 	        saveComment: '&',
-	        comment: '=',
-	        park: '@'
+	        comment: '='
 	      }
 	    };
 	  });
@@ -34036,7 +34029,7 @@
 /* 46 */
 /***/ function(module, exports) {
 
-	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <label for=\"text\">Text:</label>\n    <input name=\"text\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\">\n  </div>\n  <p>\n    How Competitive Was it?\n  </p>\n  <select name=\"compRating\">\n    <option ng-repeat=\"rating in cfCtrl.ratings\" ng-model=\"cfCtrl.comment.compRating\" value=\"rating\">{{rating}}</option>\n  </select>\n  <p>\n    How Busy Was it?\n  </p>\n  <select name=\"busyRating\">\n    <option ng-repeat=\"rating in cfCtrl.ratings\" ng-model=\"cfCtrl.comment.busyRating\">{{rating}}</option>\n  </select>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
+	module.exports = "<form class=\"form-inline\" novalidate ng-submit=\"cfCtrl.saveCommentAndNull(cfCtrl.comment)\">\n  <div class=\"form-group\">\n    <input name=\"text\" id=\"txt-input\" class=\"form-control\" ng-model=\"cfCtrl.comment.text\" />\n  </div>\n  <button type=\"submit\" class=\"btn btn-default\">{{cfCtrl.commentButtonText}}</button>\n  <ng-transclude></ng-transclude>\n</form>\n";
 
 /***/ },
 /* 47 */
@@ -34077,15 +34070,11 @@
 	  app.controller('AuthController', ['$http', '$location', '$window', '$log', 'auth', function ($http, $location, $window, $log, auth) {
 	    this.hasAccount = false;
 	    this.signup = function (user) {
-
+	      auth.setUser(user);
 	      $log.debug('$ctrl.signup');
-
-	      debugger;
 	      $http.post(this.baseUrl + '/signup', user).then(function (res) {
 	        auth.setToken(res.data.token);
-	        $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
 	        $location.path('/map');
-	        debugger;
 	      }, function (err) {
 	        $log.error('error in $ctrl.signup', err);
 	        $location.path('/home');
@@ -34093,13 +34082,13 @@
 	    };
 
 	    this.login = function (user) {
+	      auth.setUser(user);
 	      $http.get(this.baseUrl + '/login', {
 	        headers: {
 	          'Authorization': 'Basic ' + $window.btoa(user.basic.email + ':' + user.basic.password)
 	        }
 	      }).then(function (res) {
 	        auth.setToken(res.data.token);
-	        $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
 	        $location.path('/map');
 	      }, function (err) {
 	        $log.error('error in $ctrl.login', err);
