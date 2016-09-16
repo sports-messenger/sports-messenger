@@ -1,41 +1,22 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('CommentController', ['$log', '$http', '$scope', CommentController]);
+  app.controller('CommentController', ['$log', '$http', '$window','auth', CommentController]);
 
-  function CommentController($log, $http) {
+  function CommentController($log, $http, $window, auth) {
     this.comments = [];
     this.getAllComments = function() {
+      auth.getUser();
       $log.debug('commentCtrl.getAllComments');
       $http.get(this.baseUrl + '/comments', this.config)
         .then((res) => {
-          $log.log('commentCtrl.getAllComments res.data', res.data);
-          this.comments = res.data;
+          this.comments = res.data.filter((comment) => {
+            if(comment.parkId === this.park._id) {
+              return comment;
+            }
+          });
         }, (err) => {
           $log.error('error in commentCtrl.getAllComments', err);
-        });
-    };
-
-    this.getSingleComment = function(commentId) {
-      $log.debug('commentCtrl.getSingleComment');
-      $http.get(this.baseUrl + '/comments/' + commentId, this.config)
-        .then((res) => {
-          $log.log('commentCtrl.getSingleComment res.data', res.data);
-          this.comments = res.data;
-          this.getUsername(this.comments[0]);
-        }, (err) => {
-          $log.error('error in commentCtrl.getAllComments', err);
-        });
-    };
-
-    this.getUsername = function(comment) {
-      $log.debug('commentCtrl.getUsername');
-      $http.get(this.baseUrl + '/users/' + comment.userId)
-        .then((res) => {
-          $log.log('commentCtrl.getUsername res.data', res.data);
-          this.comment.username = res.data.name;
-        }, (err) => {
-          $log.error('error in commentCtrl.getUsername', err);
         });
     };
 
@@ -44,7 +25,6 @@ module.exports = function(app) {
       $http.delete(this.baseUrl + '/comments/' + comment._id, this.config)
         .then((res) => {
           this.comments.splice(this.comments.indexOf(comment), 1);
-          $log.log('commentCtrl.deleteComment res', res);
         }, (err) => {
           $log.error('error in commentCtrl.deleteComment', err);
         });
@@ -53,11 +33,10 @@ module.exports = function(app) {
     this.createComment = function(comment) {
       $log.debug('commentCtrl.createComment');
       comment.parkId = this.park._id;
+      comment.username = $window.localStorage.username;
       $http.post(this.baseUrl + '/comments', comment, this.config)
         .then((res) => {
-          $log.log('successfully created comment', res.data);
           this.comments.push(res.data);
-          this.park.comments.push(res.data);
         })
         .catch((err) => {
           $log.error('error in commentCtrl.createComment', err);

@@ -4,23 +4,23 @@
     <form class="form-inline" class="container" novalidate ng-submit="parkCtrl.setNewAddress()">
 
       <div class="form-group">
-        <label for="address" ></label>
-        <input type="text" class="form-control" name="address" ng-model="parkCtrl.addressString">
+        <label for="address">Enter Your Address to Find A Park Near You:</label>
+        <input type="text" class="form-control addressInput" name="address" ng-model="parkCtrl.addressString">
       </div>
 
       <div>
-        <button type="submit" ng-show="!parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=true" class="btn btn-danger">Enter Address</button>
-        <button ng-if="parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=false" class="btn btn-danger">Change Address</button>
+        <button type="submit" ng-show="!parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=true" class="btn btn-primary buttonContainer">Enter Address</button>
+        <button ng-show="parkCtrl.hasAddress" ng-click="parkCtrl.changeAddressButton()" class="btn btn-primary buttonContainer">Change Address</button>
       </div>
     </form>
     <div ng-if="parkCtrl.hasAddress">
       <p>How Far Away?</p>
 
-        <li ng-repeat="distance in parkCtrl.distances"><button type="button" ng-click="parkCtrl.setNearbyParks(distance)" class="btn btn-danger">{{distance}} miles from current location</button></li>
+        <li ng-repeat="distance in parkCtrl.distances" class="buttonContainer"><button type="button" ng-click="parkCtrl.setNearbyParks(distance)" class="btn btn-primary distanceButton">{{distance}} miles from current location</button></li>
 
       <p>Choose A Sport:</p>
 
-        <li ng-repeat="sport in parkCtrl.sports"><button type="button" ng-click="parkCtrl.setSelectedParks(sport)" class="btn btn-danger"> {{sport}}</button></li>
+        <li ng-repeat="sport in parkCtrl.sports" class="buttonContainer"><button type="button" ng-click="parkCtrl.setSelectedParks(sport)" class="btn btn-primary sportButton"> {{sport}}</button></li>
 
     </div>
   </div>

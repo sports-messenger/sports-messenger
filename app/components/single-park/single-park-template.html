@@ -5,7 +5,6 @@
   </ul>
   <p>{{spCtrl.park.hours}}</p>
   <ul>
-    <li ng-repeat="comment in park.comments"><sm-comment park="{{park}}" comment="{{comment}}"></sm-comment></li>
+    <sm-comment park="spCtrl.park" config="httpConfig" base-url="{{spCtrl.baseUrl}}"></sm-comment>
   </ul>
-  <sm-comment-form comment-button-text="Add Comment" save-comment="commentCtrl.createComment(comment)"></sm-comment-form>
 </div>

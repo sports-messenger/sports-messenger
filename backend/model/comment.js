@@ -7,7 +7,7 @@ mongoose.Promise = Promise;
 
 let commentSchema = mongoose.Schema({
   parkId: {type: String, required: true},
-  userId: {type: String, required: true},
+  username: {type: String, required: true},
   text: String,
   compRating: Number,
   busyRating: Number,

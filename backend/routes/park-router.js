@@ -4,10 +4,10 @@ const Router = require('express').Router;
 const createError = require('http-errors');
 const jsonParser = require('body-parser').json();
 const debug = require('debug')('note:list-router');
+const ErrorHandler = require('../lib/error-handler');
 
 const Park = require('../model/park');
 const Comment = require('../model/comment');
-const jwt_auth = require('../lib/jwt-auth');
 
 //module constants
 let parkRouter = module.exports = exports = new Router();
@@ -15,21 +15,20 @@ let parkRouter = module.exports = exports = new Router();
 // module logic
 parkRouter.post('/', jsonParser, function(req, res, next){
   debug('POST /api/park');
-  if (!req.body.name)
-    return next(createError(400, 'ERROR: park requires name field'));
+  if (!req.body.name) return next(createError(400, 'ERROR: park requires name field'));
+  if (!req.body.location.xpos || !req.body.location.ypos) return(createError(400, 'ERROR: park requires location'));
   new Park(req.body).save().then(park => {
     res.json(park);
-  }).catch(next);
+  }).catch(ErrorHandler(409, next, 'Data already exists in database'));
 });
 
 parkRouter.get('/', function(req,res,next){
   debug('GET /api/park/');
   Park.find({})
-    .populate('comments')
     .then(parks => res.send(parks)).catch(next);
 });
 
-parkRouter.get('/test', function(req, res, next) {
+parkRouter.get('/data', function(req, res, next) {
   require('../lib/park-data')();
   res.json('Please Work, ' + new Date());
 });

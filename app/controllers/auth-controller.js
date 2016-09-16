@@ -4,16 +4,13 @@ module.exports = function(app) {
   app.controller('AuthController', ['$http', '$location', '$window', '$log', 'auth', function($http, $location, $window, $log, auth) {
     this.hasAccount = false;
     this.signup = function(user) {
-
+      auth.setUser(user);
       $log.debug('$ctrl.signup');
-
-      debugger;
       $http.post(this.baseUrl + '/signup', user)
       .then((res) => {
         auth.setToken(res.data.token);
         $http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
         $location.path('/map');
-        debugger;
       }, (err) => {
         $log.error('error in $ctrl.signup', err);
         $location.path('/home');
@@ -21,6 +18,7 @@ module.exports = function(app) {
     };
 
     this.login = function(user) {
+      auth.setUser(user);
       $http.get(this.baseUrl + '/login', {
         headers: {
           'Authorization': 'Basic ' + $window.btoa(user.basic.email + ':' + user.basic.password)

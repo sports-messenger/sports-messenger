@@ -41,7 +41,38 @@ h1 {
 }
 
 .google-map {
-  width:  100%;
-  height: 35vw;
+  display: inline-block;
+  width:  70%;
+  height: 45vw;
   margin: 0 auto;
+}
+
+sm-park {
+  width: 28%;
+  display: inline-block;
+  height: 45vw;
+  vertical-align: top;
+  text-align: center;
+}
+
+.distanceButton {
+  width: 70%;
+}
+
+.sportButton {
+  width: 60%;
+}
+
+.buttonContainer {
+  list-style: none;
+  margin-bottom: 5px;
+}
+
+.addressInput {
+  margin-bottom: 10px;
+}
+
+.commentContainer {
+  border: solid thin black;
+  border-radius: 5px;
 }

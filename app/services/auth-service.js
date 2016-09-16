@@ -10,6 +10,11 @@ module.exports = function(app){
         if ($window.localStorage.token) return this.setToken($window.localStorage.token);
         if (!options.noRedirect) $location.path('/home');
       },
+      setUser: function(user) {
+        $window.localStorage.username = user.basic.email;
+        this.username = user.basic.email;
+        return user.basic.email;
+      },
       setToken: function(token){
         $window.localStorage.token = token;
         this.token = token;
@@ -25,6 +30,7 @@ module.exports = function(app){
       },
       deleteToken: function(){
         $window.localStorage.token = '';
+        $window.localStorage.username = '';
         this.token = '';
         $location.path('/home');
       }

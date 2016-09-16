@@ -17,7 +17,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/index.js',
-      'test/*-test.js',
+      'frontend-testing/*-test.js',
       'node_modules/angular-mocks/angular-mocks.js'
     ],
 
@@ -31,7 +31,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'app/index.js': ['webpack'],
-      'test/list-test.js':['babel']
+      'frontend-testing/*-test.js':['babel']
     },
 
 

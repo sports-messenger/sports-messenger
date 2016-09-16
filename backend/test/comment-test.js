@@ -12,7 +12,7 @@ describe('comment Crud tests', function() {
   it('should create a comment', function(done) {
     request(baseUrl)
       .post('/')
-      .send({parkId: '10', userId: '14'})
+      .send({parkId: '10', userId: '14', username: 'fakeUser'})
       .end((err, res) => {
         expect(err).to.eql(null);
         expect(res.body.parkId).to.eql('10');
@@ -23,7 +23,7 @@ describe('comment Crud tests', function() {
   describe('with a comment in db', function() {
     let newComment;
     before(function(done) {
-      newComment = new Comment({parkId: '4', userId:'7'});
+      newComment = new Comment({parkId: '4', userId:'7', username: 'testUser'});
       newComment.save().then((commentData) => {
         this.comment = commentData;
         done();
