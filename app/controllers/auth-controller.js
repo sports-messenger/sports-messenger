@@ -25,7 +25,6 @@ module.exports = function(app) {
       })
       .then((res) => {
         auth.setToken(res.data.token);
-        $log.log($http.defaults.headers.common);
         $location.path('/map');
       }, (err) => {
         $log.error('error in $ctrl.login', err);
