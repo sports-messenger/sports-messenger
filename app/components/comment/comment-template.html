@@ -1,8 +1,8 @@
 <div ng-init="commentCtrl.getAllComments()">
   <h4>Comments:</h4>
   <sm-comment-form comment-button-text="Add Comment" save-comment="commentCtrl.createComment(comment)"></sm-comment-form>
-  <ul>
-    <li ng-repeat="comment in commentCtrl.comments">
+  <ul class="commentContainer">
+    <li ng-repeat="comment in commentCtrl.comments" class="singleContainer">
       <h5>{{comment.username}}</h5>
       <p>{{comment.text}}</p>
       <button class="btn btn-default" ng-click="commentCtrl.deleteComment(comment)">Delete Comment</button>
