@@ -4,6 +4,8 @@
 
 @include normalize();
 
+@import './lib/_theme.scss';
+
 * {
   font-family: Arial;
 }
@@ -13,7 +15,7 @@ h1 {
 }
 
 .header-style {
-  background-color: black;
+  background-color: $app-primary;
   margin: 0;
   padding: 0;
 }
@@ -37,7 +39,7 @@ h1 {
 }
 
 .nav-links:hover {
-  background-color: white;
+  background-color: $app-hover;
 }
 
 .google-map {
@@ -73,6 +75,6 @@ sm-park {
 }
 
 .commentContainer {
-  border: solid thin black;
+  border: solid thin $app-primary;
   border-radius: 5px;
 }
