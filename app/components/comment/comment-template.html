@@ -1,5 +1,4 @@
 <div ng-init="commentCtrl.getAllComments()">
-  <h4>Comments:</h4>
   <sm-comment-form comment-button-text="Add Comment" save-comment="commentCtrl.createComment(comment)"></sm-comment-form>
   <ul class="commentContainer">
     <li ng-repeat="comment in commentCtrl.comments" class="singleContainer">
