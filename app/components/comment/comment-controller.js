@@ -5,7 +5,6 @@ module.exports = function(app) {
 
   function CommentController($log, $http, $window, auth) {
     this.comments = [];
-    let authToken = auth.getToken();
     this.authConfig = {headers: {'Accept': 'application/json', 'Content-Type':'application/json', 'Authorization':'Bearer ' + $window.localStorage.token}};
     this.getAllComments = function() {
       auth.getUser();
