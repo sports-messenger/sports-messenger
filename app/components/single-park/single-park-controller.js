@@ -7,6 +7,7 @@ module.exports = function(app) {
 function SingleParkController($log, $http, $location, auth){
   this.pathId = $location.path();
   this.park = null;
+  this.baseUrl = (process.env.API_URL || 'http://localhost:3000') + '/api';
 
   this.getPark = function() {
     auth.getUser();
@@ -14,7 +15,8 @@ function SingleParkController($log, $http, $location, auth){
     $http.get(this.baseUrl + this.pathId, this.config)
     .then((res) => {
       this.park = res.data;
-      $http.get(this.baseUrl + '/comments/park/' + res.data._id, this.config)
+      debugger;
+      $http.get(this.baseUrl + '/comments/parks/' + res.data._id, this.config)
       .then((res) => {
         this.park.comments = res.data;
       });

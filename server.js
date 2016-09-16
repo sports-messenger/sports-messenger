@@ -23,12 +23,11 @@ process.env.APP_SECRET = 'secret';
 mongoose.Promise = Promise;
 mongoose.connect(mongoDbUri);
 
+app.use(express.static(`${__dirname}/build`));
+require('./backend/lib/park-data')();
+
 app.use(morgan('dev'));
 app.use(cors());
-
-app.get('/', (req, res) => {
-  res.json({msg: 'hello'});
-});
 
 app.use('/api', authRouter);
 app.use('/api', commentRouter);
@@ -42,8 +41,6 @@ app.all('*', function(req, res, next){
 });
 
 app.use(handleError);
-
-app.use(express.static(`${__dirname}/build`));
 
 app.listen(port, function(){
   console.log(`Server up on ${port}`);

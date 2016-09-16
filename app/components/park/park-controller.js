@@ -14,6 +14,8 @@ function ParkController($log, $http, $scope, parksMapCombine) {
   this.selectedParks = [];
   this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
   this.distances = [1, 3, 5, 10];
+  this.baseUrl = (process.env.API_URL || 'http://localhost:3000') + '/api';
+
 
   $scope.$watch('serviceArray', function(newArray, oldArray) {
     if (newArray !== oldArray) parksMapCombine.setArray(newArray);
@@ -25,6 +27,7 @@ function ParkController($log, $http, $scope, parksMapCombine) {
 
   this.getAllParks = function() {
     $log.debug('parkCtrl.getAllParks');
+    debugger;
     $http.get(this.baseUrl + '/parks', this.config)
     .then((res) => {
       this.parks = res.data;

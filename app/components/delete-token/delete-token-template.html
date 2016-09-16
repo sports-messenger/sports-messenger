@@ -1,6 +1,6 @@
 <h1>Temp Log Out Template</h1>
 
-<div ng-init="$ctrl.getUser()">
+<div class="container" ng-init="$ctrl.getUser()">
   <p ng-if="!$ctrl.currentUser.username">Are you sure you want to sign out, {{$ctrl.currentUser.username}}?</p>
   <button class="btn btn-danger" ng-click="$ctrl.deleteToken()">Sign Out</button>
 </div>
