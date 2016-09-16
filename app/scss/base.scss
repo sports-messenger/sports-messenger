@@ -4,14 +4,22 @@
 
 @include normalize();
 
+* {
+  font-family: Arial;
+}
+
 h1 {
-  font-size: 5px;
+  font-size: 1vw;
 }
 
 .header-style {
   background-color: black;
   margin: 0;
   padding: 0;
+}
+
+.header-link {
+  font-size: 10px;
 }
 
 .navbar-brand {
@@ -29,11 +37,11 @@ h1 {
 }
 
 .nav-links:hover {
-  background-color: darkred;
+  background-color: white;
 }
 
 .google-map {
-  width:  1000px;
-  height: 500px;
+  width:  100%;
+  height: 35vw;
   margin: 0 auto;
 }

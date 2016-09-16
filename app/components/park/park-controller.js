@@ -33,6 +33,11 @@ function ParkController($log, $http, $scope, parksMapCombine) {
     });
   };
 
+  this.changeAddressButton = function() {
+    this.addressString = null;
+    this.hasAddress = false;
+  };
+
   this.setNewAddress = function() {
     $log.debug('parkCtrl.setNewAddress');
     let formattedString = this.addressString.split(' ').join('+');
