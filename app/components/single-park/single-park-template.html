@@ -1,10 +1,17 @@
 <div ng-init="spCtrl.getPark()">
-  <h2>{{spCtrl.park.name}}</h2>
-  <ul>
-    <li ng-repeat="sport in spCtrl.park.sports">{{sport}}</li>
-  </ul>
-  <p>{{spCtrl.park.hours}}</p>
-  <ul>
-    <sm-comment park="spCtrl.park" config="httpConfig" base-url="{{spCtrl.baseUrl}}"></sm-comment>
-  </ul>
+  <div class="div_park">
+    <div class="div_park_name">
+      <h2>{{spCtrl.park.name}}</h2>
+      <ul>
+        <li ng-repeat="sport in spCtrl.park.sports">{{sport}}</li>
+        <li>{{spCtrl.park.hours}}</li>
+      </ul>
+    </div>
+    <img src="http://www.thesportstruth.com/wp-content/uploads/2015/11/sports.jpg" class="comment-image" alt="balls" />
+  </div>
+  <div>
+    <ul>
+      <sm-comment park="spCtrl.park" config="httpConfig" base-url="{{spCtrl.baseUrl}}"></sm-comment>
+    </ul>
+  </div>
 </div>
