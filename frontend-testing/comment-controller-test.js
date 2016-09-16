@@ -10,6 +10,7 @@ describe('testing comment controller', function() {
       this.commentCtrl.park = {_id: '55'};
       this.commentCtrl.comments = [{username: 'keiran', parkId: '25', text:'test1', _id: '1'}, {username: 'marshall', parkId: '34', text: 'test2', _id: '2'}, {username: 'tre', parkId: '55', text: 'test3', _id: '3'}, {username: 'dog the bounty hunter', parkId: '55', text: 'test4', _id:'4'}];
       this.commentCtrl.baseUrl = 'http://localhost:3000/api';
+      this.commentCtrl.authConfig = {headers: {'Accept': 'application/json', 'Content-Type':'application/json', 'Authorization': 'Bearer undefined'}}
       this.commentCtrl.config = {headers: {
         'Accept':'application/json', 'Content-Type':'application/json'
       }};
@@ -34,7 +35,7 @@ describe('testing comment controller', function() {
   it('testing create comment', () => {
     this.$window.localStorage.username = 'Spiderman';
     let newComment = {text: 'testing testing'};
-    this.$httpBackend.expectPOST('http://localhost:3000/api/comments', newComment, {'Accept': 'application/json', 'Content-Type':'application/json'})
+    this.$httpBackend.expectPOST('http://localhost:3000/api/comments', newComment, this.authConfig)
     .respond(200, [{username: 'Spiderman', parkId:'55', text: 'testing testing'}]);
     this.commentCtrl.createComment(newComment);
     this.$httpBackend.flush();
@@ -42,7 +43,7 @@ describe('testing comment controller', function() {
 
   it('should return 400', () => {
     let newComment = {text: 'testtesttest'};
-    this.$httpBackend.expectPOST('http://localhost:3000/api/comments', newComment, {'Accept': 'application/json', 'Content-Type': 'application/json'})
+    this.$httpBackend.expectPOST('http://localhost:3000/api/comments', newComment, this.authConfig)
     .respond(400, 'ERROR: comment requires username');
     this.commentCtrl.createComment(newComment);
     this.$httpBackend.flush();
