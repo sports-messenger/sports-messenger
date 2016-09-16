@@ -15,8 +15,7 @@ function SingleParkController($log, $http, $location, auth){
     $http.get(this.baseUrl + this.pathId, this.config)
     .then((res) => {
       this.park = res.data;
-      debugger;
-      $http.get(this.baseUrl + '/comments/parks/' + res.data._id, this.config)
+      $http.get(this.baseUrl + '/comments/park/' + res.data._id, this.config)
       .then((res) => {
         this.park.comments = res.data;
       });
