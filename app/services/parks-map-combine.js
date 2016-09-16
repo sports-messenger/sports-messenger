@@ -9,10 +9,11 @@ module.exports = function(app) {
     return {
       setArray: function(array) {
         data.serviceArray = array;
+        console.log('parksMapCombine.serviceArray', data.serviceArray);
       },
       setAddressPoint: function(address) {
         data.addressPoint = address;
-        console.log('service.addressPoint', data.addressPoint);
+        console.log('parksMapCombine.addressPoint', data.addressPoint);
       },
       setBothValues: function(array, address) {
         data.serviceArray = array;
