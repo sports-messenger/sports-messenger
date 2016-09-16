@@ -11,7 +11,7 @@ const jwtAuth = require('../lib/jwt-auth');
 
 let commentRouter = module.exports = exports = new Router();
 
-commentRouter.post('/comments', jsonParser, jwtAuth, function(req, res, next){
+commentRouter.post('/comments', jsonParser, function(req, res, next){
   debug('POST REQUEST from /api/comment');
   if (!req.body.parkId) return next(createError(400, 'ERROR: comment requires parkId'));
   if (!req.body.username) return next(createError(400, 'ERROR: comment requires username'));
