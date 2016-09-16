@@ -5,7 +5,7 @@
       <label for="address">Enter Your Address to Find A Park Near You:</label>
       <input type="text" name="address" ng-model="parkCtrl.addressString">
       <button type="submit" ng-show="!parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=true">Enter Address</button>
-      <button ng-if="parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=false">Change Address</button>
+      <button ng-show="parkCtrl.hasAddress" ng-click="parkCtrl.hasAddress=false">Change Address</button>
     </form>
     <div ng-if="parkCtrl.hasAddress">
       <p>How Far Away?</p>

@@ -51,7 +51,6 @@ module.exports = exports = function() {
       assert.ok(promise instanceof Promise);
       promise.then(function(savedPark) {
         assert.equal(savedPark.name, newPark.name);
-        console.log(savedPark);
       });
     });
   });

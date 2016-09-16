@@ -12,6 +12,7 @@ module.exports = function(app) {
       },
       setAddressPoint: function(address) {
         data.addressPoint = address;
+        console.log('service.addressPoint', data.addressPoint);
       },
       setBothValues: function(array, address) {
         data.serviceArray = array;
