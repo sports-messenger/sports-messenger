@@ -9,10 +9,8 @@ const ErrorHandler = require('../lib/error-handler');
 const Park = require('../model/park');
 const Comment = require('../model/comment');
 
-//module constants
 let parkRouter = module.exports = exports = new Router();
 
-// module logic
 parkRouter.post('/', jsonParser, function(req, res, next){
   debug('POST /api/park');
   if (!req.body.name) return next(createError(400, 'ERROR: park requires name field'));

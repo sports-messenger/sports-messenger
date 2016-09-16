@@ -5,6 +5,7 @@ module.exports = function(app) {
 
   function CommentController($log, $http, $window, auth) {
     this.comments = [];
+    this.authConfig = {headers: {'Accept': 'application/json', 'Content-Type':'application/json', 'Authorization':'Bearer ' + $window.localStorage.token}};
     this.getAllComments = function() {
       auth.getUser();
       $log.debug('commentCtrl.getAllComments');
@@ -31,10 +32,11 @@ module.exports = function(app) {
     };
 
     this.createComment = function(comment) {
+      $log.log('token in createComment', this.authConfig);
       $log.debug('commentCtrl.createComment');
       comment.parkId = this.park._id;
       comment.username = $window.localStorage.username;
-      $http.post(this.baseUrl + '/comments', comment, this.config)
+      $http.post(this.baseUrl + '/comments', comment, this.authConfig)
         .then((res) => {
           this.comments.push(res.data);
         })
