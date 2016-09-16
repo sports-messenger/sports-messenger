@@ -42,9 +42,6 @@ function ParkController($log, $http, $scope, parksMapCombine) {
     $log.debug('parkCtrl.setNewAddress');
     let formattedString = this.addressString.split(' ').join('+');
     $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + formattedString + '&key=AIzaSyD6A3QVKo_K60NtkqF7vElOnbvCCxfnfOw').then((res) => {
-      $log.log(res.data.results[0].geometry.location.lat);
-      $log.log(res.data.results[0].geometry.location.lng);
-      $log.log(res.data.results[0].geometry.location);
       this.addressPoint = {lat:res.data.results[0].geometry.location.lat, lng: res.data.results[0].geometry.location.lng};
       parksMapCombine.setAddressPoint(this.addressPoint);
       this.addressString = null;
