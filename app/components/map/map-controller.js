@@ -13,6 +13,7 @@ module.exports = function(app) {
     this.mapPoints = [];
     this.image = 'https://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB1oXOM.img';
     this.addressPoint = null;
+    //a lot of these seem to get reused you might want to put them in a service
     this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
     this.distances = [1, 5, 10, 20];
     $scope.redirect = function(id) {
@@ -49,6 +50,7 @@ module.exports = function(app) {
         this.mapPoints.forEach((park) => {
           let marker = new google.maps.Marker({position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: this.map, icon: this.image, title: park.name});
 
+          //there is definitely a better way to do this at the very least I would put it in a service function
           let contentString = '<div id="content">'+
           '<div id="siteNotice">'+
           '<p id="firstHeading">Location: '+ park.name +'</p>'+
@@ -86,6 +88,7 @@ module.exports = function(app) {
         this.mapPoints.forEach(function(park) {
           let marker = new google.maps.Marker({position: new google.maps.LatLng(park.location.ypos, park.location.xpos), map: map, icon: image, title: park.name});
 
+          //with the reuse here this should definitely be in a function
           let contentString = '<div id="content">'+
           '<div id="siteNotice">'+
           '<p id="firstHeading">Location: '+ park.name +'</p>'+

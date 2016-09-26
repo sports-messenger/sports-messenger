@@ -20,6 +20,7 @@ projectApp.run(['$rootScope', ($rs) => {
   };
 }]);
 
+//great organization of components for the front end, really logically split up
 projectApp.config(['$routeProvider', ($rp) => {
   $rp
   .when('/home', {

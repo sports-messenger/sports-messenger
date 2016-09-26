@@ -12,9 +12,12 @@ function ParkController($log, $http, $scope, parksMapCombine) {
   $scope.serviceArray = [];
   this.parks = [];
   this.selectedParks = [];
+  // you might want to make these paramaters you can pass in and then default to these values makes your
+  // directives more extendable/maintainable
   this.sports = ['Basketball (Full)', 'Basketball (Half)', 'Soccer', 'Tennis Court (Outdoor)', 'Baseball/Softball'];
   this.distances = [1, 3, 5, 10];
 
+  //good use of .$watch I imagine this was a pain to figure out
   $scope.$watch('serviceArray', function(newArray, oldArray) {
     if (newArray !== oldArray) parksMapCombine.setArray(newArray);
   });
@@ -48,6 +51,8 @@ function ParkController($log, $http, $scope, parksMapCombine) {
     });
   };
 
+  //you might consider moving some of these helper functions to a service, these seem like they would be useful outside
+  //of just this controller
   this.getRadian = function(num) {
     return (num * Math.PI / 180);
   };

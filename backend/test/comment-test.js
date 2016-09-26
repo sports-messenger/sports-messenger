@@ -9,6 +9,7 @@ const baseUrl = 'localhost:5000/api/comments';
 const Comment = require('../model/comment');
 
 describe('comment Crud tests', function() {
+  //for edge cases you might want to test making a request to add a comment to a park that doesn't exist
   it('should create a comment', function(done) {
     request(baseUrl)
       .post('/')

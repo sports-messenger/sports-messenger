@@ -1,3 +1,4 @@
+// instead of commenting stuff out, just get rid of it
 // 'use strict';
 //
 // describe('testing map controller', function() {

@@ -12,7 +12,7 @@ let authRouter = module.exports = exports = Router();
 
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   let newUser = new User();
-  console.log(req.body);
+  console.log(req.body); //should probably get rid of these console.log statements in favor of using the debug package
   newUser.basic.email = req.body.basic.email;
   newUser.username = req.body.username || req.body.basic.email;
   newUser.generateHash(req.body.basic.password)

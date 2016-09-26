@@ -13,8 +13,11 @@ let commentRouter = module.exports = exports = new Router();
 
 commentRouter.post('/comments', jsonParser, jwtAuth, function(req, res, next){
   debug('POST REQUEST from /api/comment');
+  //great use of debug in all of these routes
   if (!req.body.parkId) return next(createError(400, 'ERROR: comment requires parkId'));
   if (!req.body.username) return next(createError(400, 'ERROR: comment requires username'));
+  //instead of filling your code with checks you should make these fields required in your model
+  //and rely on the mongoose validations for these things
   new Comment(req.body).save().then((comment) => {
     res.json(comment);
   }).catch(ErrorHandler(409, next, 'Data already exits in database'));
@@ -39,6 +42,8 @@ commentRouter.delete('/comments/:id', function(req, res, next){
   debug('PUT /api/comment/:id');
   Comment.findOneAndRemove({_id: req.params.id})
     .then( comment => {
+      //not sure exactly what you're doing here, I don't think you need to save this
+      //to an outside variable
       result = comment;
     })
     .then(() => {
