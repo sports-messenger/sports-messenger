@@ -76,6 +76,7 @@ describe('park Crud tests', function() {
         });
     });
 
+    //nice, way to test edge cases as well
     it('should give bad post request', function(done) {
       request(baseUrl)
         .post('/')

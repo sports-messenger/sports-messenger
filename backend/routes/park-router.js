@@ -15,6 +15,7 @@ parkRouter.post('/', jsonParser, function(req, res, next){
   debug('POST /api/park');
   if (!req.body.name) return next(createError(400, 'ERROR: park requires name field'));
   if (!req.body.location.xpos || !req.body.location.ypos) return(createError(400, 'ERROR: park requires location'));
+  //once again, try to rely on the mongoose validation methods
   new Park(req.body).save().then(park => {
     res.json(park);
   }).catch(ErrorHandler(409, next, 'Data already exists in database'));
@@ -24,6 +25,7 @@ parkRouter.get('/', function(req,res,next){
   debug('GET /api/park/');
   Park.find({})
     .then(parks => res.send(parks)).catch(next);
+    //might want to make this a single line, makes your code look a little more clean imho
 });
 
 parkRouter.get('/data', function(req, res, next) {
@@ -50,6 +52,8 @@ parkRouter.put('/:id', jsonParser, function(req, res, next){
 parkRouter.delete('/:id', jsonParser, function(req, res, next){
   let result;
   debug('PUT /api/park/:id');
+  //once again these seems a little convoluted
+  //you can probably do the same action in a single .then statement
   Park.findOneAndRemove({_id: req.params.id})
     .then( park => {
       result = park;
